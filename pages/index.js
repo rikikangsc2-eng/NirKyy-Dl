@@ -1,11 +1,11 @@
+
 /*
 * Lokasi: pages/index.js
 * Versi: v3
 */
 
 import Head from 'next/head';
-import fs from 'fs';
-import path from 'path';
+import { getAllApiEndpoints } from '../lib/api-docs';
 
 const getMethodColor = (method) => {
   switch (method) {
@@ -183,16 +183,7 @@ export default function Home({ apiEndpoints }) {
 }
 
 export async function getStaticProps() {
-  const manifestPath = path.join(process.cwd(), 'lib/api-manifest.json');
-  let apiEndpoints = [];
-
-  try {
-    const manifestContent = fs.readFileSync(manifestPath, 'utf-8');
-    apiEndpoints = JSON.parse(manifestContent);
-  } catch (error) {
-    console.warn('Could not read API manifest. Run build script.');
-  }
-
+  const apiEndpoints = getAllApiEndpoints();
   return {
     props: {
       apiEndpoints,
