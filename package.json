@@ -1,16 +1,18 @@
 {
-  "name": "rest-api-nextjs",
-  "version": "1.0.0",
+  "name": "api-docs-generator",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node ./scripts/generate-api-manifest.js && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "next": "13.0.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-syntax-highlighter": "^15.5.0",
+    "react-window": "^1.8.7"
   }
 }
