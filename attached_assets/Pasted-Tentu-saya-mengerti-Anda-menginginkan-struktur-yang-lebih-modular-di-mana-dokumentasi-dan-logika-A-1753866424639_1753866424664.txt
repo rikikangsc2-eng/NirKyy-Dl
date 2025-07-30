@@ -1,0 +1,398 @@
+Tentu, saya mengerti. Anda menginginkan struktur yang lebih modular di mana dokumentasi dan logika API berada di file yang sama. Ini adalah pendekatan yang jauh lebih bersih dan skalabel.
+
+Saya akan merombak proyeknya agar setiap file endpoint API juga mengekspor metadatanya sendiri. Halaman utama kemudian akan secara dinamis membaca semua file API ini dan membangun halaman dokumentasi secara otomatis.
+
+### 1. STRUKTUR PROYEK + VERSI FILE
+
+```
+📦 rest-api-nextjs/
+├── 📁 lib/
+│   └── api-docs.js (v1)
+├── 📁 pages/
+│   ├── 📁 api/
+│   │   ├── 📁 downloader/
+│   │   │   └── tiktok.js (v2)
+│   │   └── 📁 main/
+│   │       └── pingcheck.js (v2)
+│   └── index.js (v2)
+└── package.json (v1)
+```
+
+### 2. TUJUAN DAN PENJELASAN
+
+Tujuan modifikasi ini adalah untuk menciptakan sistem REST API yang **sepenuhnya modular dan mendokumentasikan dirinya sendiri (self-documenting)**. Logika dan dokumentasi untuk setiap endpoint kini disatukan dalam file yang sama.
+
+Manfaat utamanya adalah **kemudahan pengembangan dan pemeliharaan**. Untuk menambah atau mengubah endpoint, Anda hanya perlu mengedit satu file. Halaman dokumentasi utama akan diperbarui secara otomatis tanpa perlu modifikasi manual, mengurangi risiko kesalahan dan mempercepat proses pengembangan.
+
+### 3. PENJELASAN DETAIL STRATEGI ATAU PERUBAHAN
+
+1.  **Metadata di Setiap Endpoint**: Setiap file API (`tiktok.js`, `pingcheck.js`) kini mengekspor konstanta bernama `metadata`. Objek ini berisi semua informasi yang diperlukan untuk dokumentasi (deskripsi, parameter, contoh, dll).
+2.  **Pemindai Otomatis (`lib/api-docs.js`)**: Sebuah file helper baru dibuat untuk memindai direktori `pages/api` saat aplikasi di-build. Helper ini akan membaca setiap file, mengambil `metadata` yang diekspor, dan menyusun daftar lengkap semua endpoint yang tersedia. Kategori endpoint secara otomatis diambil dari nama direktorinya (misal: `downloader`, `main`).
+3.  **Halaman Dinamis (`pages/index.js`)**: Halaman utama sekarang menggunakan `getStaticProps` untuk memanggil pemindai otomatis dari `lib/api-docs.js`. Data endpoint yang didapat dari pemindai kemudian di-render menjadi halaman dokumentasi. Ini memastikan halaman dokumentasi selalu sinkron dengan file API yang sebenarnya.
+
+### 4. PERBANDINGAN
+
+| Aspek | Versi Sebelumnya (v1) | Versi Baru (v2) |
+| :--- | :--- | :--- |
+| **Lokasi Dokumentasi** | Terpusat di `pages/index.js` dalam satu array besar. | Terdistribusi di setiap file API (`/api/**/*.js`). |
+| **Proses Tambah API** | 1. Buat file API. <br>2. **Edit `pages/index.js`** untuk menambah dokumentasi. | 1. Buat file API dan langsung sertakan `metadata`-nya. <br>2. Selesai. Dokumentasi ter-update otomatis. |
+| **Skalabilitas** | Sulit dikelola jika endpoint sangat banyak. | Sangat mudah dikelola dan diperluas. |
+| **Ketergantungan** | `index.js` bergantung pada pengetahuan manual tentang semua API. | `index.js` tidak tahu apa-apa tentang API, ia hanya merender data yang diberikan. |
+
+### 5. MOTO WAJIB
+
+```
+Moto saya: Memberikan kode siap pakai, kode bersih, tanpa komentar/penjelasan, tinggal salin tanpa menyuruh pengguna untuk melengkapinya sendiri.
+```
+
+### 6. KODE FINAL
+
+
+```javascript
+/*
+* Lokasi: lib/api-docs.js
+* Versi: v1
+*/
+
+import fs from 'fs';
+import path from 'path';
+
+export function getAllApiEndpoints() {
+  const apiDirectory = path.join(process.cwd(), 'pages/api');
+  const endpoints = [];
+
+  function findApiFiles(directory) {
+    const files = fs.readdirSync(directory);
+    files.forEach((file) => {
+      const fullPath = path.join(directory, file);
+      if (fs.statSync(fullPath).isDirectory()) {
+        findApiFiles(fullPath);
+      } else if (file.endsWith('.js')) {
+        const relativePath = path.relative(apiDirectory, fullPath);
+        const apiPath = `/api/${relativePath.replace(/\\/g, '/').replace(/\.js$/, '')}`;
+        const category = relativePath.split(path.sep)[0] || 'general';
+
+        const module = require(fullPath);
+        if (module && module.metadata) {
+          const metadataArray = Array.isArray(module.metadata) ? module.metadata : [module.metadata];
+          metadataArray.forEach(meta => {
+            endpoints.push({
+              ...meta,
+              path: apiPath,
+              category: category.charAt(0).toUpperCase() + category.slice(1),
+              curl: `curl -X ${meta.method} "https://your-domain.vercel.app${apiPath}${meta.method === 'GET' && meta.parameters.length > 0 ? '?url=example' : ''}" ${meta.method === 'POST' ? `-H "Content-Type: application/json" -d '${JSON.stringify(meta.examplePayload || {})}'` : ''}`.trim()
+            });
+          });
+        }
+      }
+    });
+  }
+
+  findApiFiles(apiDirectory);
+  return endpoints;
+}
+```
+
+
+```javascript
+/*
+* Lokasi: pages/api/downloader/tiktok.js
+* Versi: v2
+*/
+
+export const metadata = {
+  method: 'GET',
+  description: 'Mengunduh informasi video TikTok berdasarkan URL.',
+  parameters: [
+    { name: 'url', type: 'string', desc: 'URL lengkap video TikTok.' }
+  ],
+  response: {
+    status: "success",
+    code: 200,
+    author: "Your API Name",
+    data: {
+      title: "Contoh Video TikTok Keren",
+      author: "@usernamekreator",
+      duration: "00:15",
+      video_url_no_watermark: "https://example.com/video.mp4"
+    }
+  }
+};
+
+export default function handler(req, res) {
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', ['GET']);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+
+  const { url } = req.query;
+
+  if (!url) {
+    return res.status(400).json({
+      status: 'error',
+      code: 400,
+      message: 'Parameter "url" is required.'
+    });
+  }
+
+  res.status(200).json(metadata.response);
+}
+```
+
+
+```javascript
+/*
+* Lokasi: pages/api/main/pingcheck.js
+* Versi: v2
+*/
+
+export const metadata = [
+  {
+    method: 'GET',
+    description: 'Mengecek status uptime dan latensi dasar dari server API.',
+    parameters: [],
+    response: {
+      status: "success",
+      message: "pong!",
+      timestamp: "2023-10-27T10:00:00.000Z"
+    }
+  },
+  {
+    method: 'POST',
+    description: 'Mengirim pesan ke server dan menerima kembali pesan yang sama (echo).',
+    parameters: [
+      { name: 'message', type: 'string', desc: 'Pesan yang ingin dikirim.' }
+    ],
+    examplePayload: {
+        message: "hello world"
+    },
+    response: {
+      status: "success",
+      echo: "hello world",
+      timestamp: "2023-10-27T10:00:00.000Z"
+    }
+  }
+];
+
+export default function handler(req, res) {
+  const { method, body } = req;
+
+  switch (method) {
+    case 'GET':
+      res.status(200).json({
+        status: 'success',
+        message: 'pong!',
+        timestamp: new Date().toISOString()
+      });
+      break;
+    
+    case 'POST':
+      const message = body.message || 'No message provided';
+      res.status(200).json({
+        status: 'success',
+        echo: message,
+        timestamp: new Date().toISOString()
+      });
+      break;
+
+    default:
+      res.setHeader('Allow', ['GET', 'POST']);
+      res.status(405).end(`Method ${method} Not Allowed`);
+  }
+}
+```
+
+
+```jsx
+/*
+* Lokasi: pages/index.js
+* Versi: v2
+*/
+
+import Head from 'next/head';
+import { getAllApiEndpoints } from '../lib/api-docs';
+
+const getMethodColor = (method) => {
+  switch (method) {
+    case 'GET': return '#61affe';
+    case 'POST': return '#49cc90';
+    case 'PUT': return '#fca130';
+    case 'DELETE': return '#f93e3e';
+    default: return '#ccc';
+  }
+};
+
+const groupByCategory = (endpoints) => {
+  return endpoints.reduce((acc, endpoint) => {
+    (acc[endpoint.category] = acc[endpoint.category] || []).push(endpoint);
+    return acc;
+  }, {});
+};
+
+export default function Home({ apiEndpoints }) {
+  const groupedEndpoints = groupByCategory(apiEndpoints);
+
+  return (
+    <div className="container">
+      <Head>
+        <title>RESTful API Documentation</title>
+        <meta name="description" content="Auto-generated API documentation" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <main>
+        <h1>RESTful API</h1>
+        <p className="subtitle">Dokumentasi API yang Dihasilkan Secara Otomatis</p>
+
+        {Object.entries(groupedEndpoints).map(([category, endpoints]) => (
+          <div key={category} className="category-section">
+            <h2>{category}</h2>
+            {endpoints.map((endpoint, index) => (
+              <div key={index} className="endpoint-card">
+                <div className="endpoint-header">
+                  <span className="method" style={{ backgroundColor: getMethodColor(endpoint.method) }}>
+                    {endpoint.method}
+                  </span>
+                  <span className="path">{endpoint.path}</span>
+                </div>
+                <p className="description">{endpoint.description}</p>
+                
+                {endpoint.parameters.length > 0 && (
+                   <div className="details-section">
+                      <h4>Parameters</h4>
+                      <ul>
+                        {endpoint.parameters.map(p => <li key={p.name}><code>{p.name}</code> ({p.type}): {p.desc}</li>)}
+                      </ul>
+                   </div>
+                )}
+
+                <div className="details-section">
+                  <h4>Contoh cURL</h4>
+                  <pre><code>{endpoint.curl}</code></pre>
+                </div>
+                <div className="details-section">
+                  <h4>Contoh Respons</h4>
+                  <pre><code>{JSON.stringify(endpoint.response, null, 2)}</code></pre>
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+      </main>
+
+      <style jsx global>{`
+        body {
+          background-color: #121212;
+          color: #e0e0e0;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          margin: 0;
+          padding: 0;
+        }
+      `}</style>
+      <style jsx>{`
+        .container {
+          max-width: 900px;
+          margin: 0 auto;
+          padding: 2rem;
+        }
+        main h1 {
+          font-size: 2.5rem;
+          color: #fff;
+          text-align: center;
+          margin-bottom: 0.5rem;
+        }
+        .subtitle {
+          text-align: center;
+          color: #a0a0a0;
+          margin-top: 0;
+          margin-bottom: 3rem;
+        }
+        .category-section {
+          margin-bottom: 3rem;
+        }
+        .category-section h2 {
+          font-size: 1.8rem;
+          color: #e0e0e0;
+          border-bottom: 2px solid #333;
+          padding-bottom: 0.5rem;
+          margin-bottom: 1.5rem;
+        }
+        .endpoint-card {
+          background-color: #1e1e1e;
+          border-radius: 8px;
+          margin-bottom: 1.5rem;
+          padding: 1.5rem;
+          border: 1px solid #2c2c2c;
+          transition: border-color 0.2s ease-in-out;
+        }
+        .endpoint-card:hover {
+          border-color: #4a4a4a;
+        }
+        .endpoint-header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 1rem;
+        }
+        .method {
+          font-weight: bold;
+          padding: 0.3rem 0.8rem;
+          border-radius: 4px;
+          font-size: 0.9rem;
+          color: #fff;
+          margin-right: 1rem;
+        }
+        .path {
+          font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+          font-size: 1.1rem;
+          color: #c5c8c6;
+        }
+        .description {
+          color: #b0b0b0;
+          margin-bottom: 1.5rem;
+        }
+        .details-section h4 {
+          color: #ccc;
+          margin-bottom: 0.5rem;
+        }
+        .details-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .details-section li {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            color: #a0a0a0;
+            margin-bottom: 0.25rem;
+        }
+        .details-section li code {
+            color: #61affe;
+            background-color: #2a2a2a;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        pre {
+          background-color: #282c34;
+          padding: 1rem;
+          border-radius: 6px;
+          overflow-x: auto;
+          white-space: pre-wrap;
+          word-wrap: break-word;
+        }
+        code {
+          font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+          color: #abb2bf;
+          font-size: 0.9rem;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+export async function getStaticProps() {
+  const apiEndpoints = getAllApiEndpoints();
+  return {
+    props: {
+      apiEndpoints,
+    },
+  };
+}
+```
