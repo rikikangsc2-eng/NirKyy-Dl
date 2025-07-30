@@ -1,7 +1,7 @@
 run = "npm i && npm run dev"
 entrypoint = "index.js"
 hidden = [".config", "package-lock.json", ".next", ".swc"]
-modules = ["nodejs-20"]
+modules = ["nodejs-22"]
 
 [nix]
 channel = "stable-24_11"

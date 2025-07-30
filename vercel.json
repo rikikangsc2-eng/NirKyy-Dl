@@ -1,8 +1,19 @@
+/*
+* Lokasi: vercel.json
+* Versi: v3
+*/
 
 {
-  "functions": {
-    "pages/api/**/*.js": {
-      "includeFiles": "routes/**"
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next",
+      "config": {
+        "includeFiles": [
+          "routes/**"
+        ]
+      }
     }
-  }
+  ]
 }

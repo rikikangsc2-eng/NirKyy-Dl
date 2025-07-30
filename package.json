@@ -9,32 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.83.0",
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.1.0",
-    "@types/passport": "^1.0.17",
-    "@vitejs/plugin-react": "^4.7.0",
-    "concurrently": "^9.2.0",
-    "express": "^5.1.0",
-    "express-session": "^1.18.2",
-    "lucide-react": "^0.534.0",
-    "memoizee": "^0.4.17",
     "next": "13.0.0",
-    "openid-client": "^6.6.2",
-    "passport": "^0.7.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-syntax-highlighter": "^15.5.0",
-    "react-window": "^1.8.7",
-    "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.11",
-    "tsx": "^4.20.3",
-    "typescript": "^5.8.3",
-    "vite": "^7.0.6",
-    "wouter": "^3.7.1",
-    "zod": "^4.0.14"
-  },
-  "devDependencies": {
-    "@types/react": "19.1.9"
+    "react-window": "^1.8.7"
   }
 }
