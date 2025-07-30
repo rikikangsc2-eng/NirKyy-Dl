@@ -1,28 +1,36 @@
 /*
 * Lokasi: components/Sidebar.jsx
-* Versi: v3
+* Versi: v7
 */
 
-import { FixedSizeList as List } from 'react-window';
+import { useState, useEffect } from 'react';
+import { IconDownloader, IconConverter, IconSearch, IconGame } from './Icons.jsx';
+
+const categoryIcons = {
+  'Downloader': <IconDownloader />,
+  'Converter': <IconConverter />,
+  'Search': <IconSearch />,
+  'Game & Fun': <IconGame />,
+};
 
 export default function Sidebar({ docs, onSelect, selectedId, isOpen, onClose }) {
-  const Row = ({ index, style }) => {
-    const doc = docs[index];
-    const isActive = doc.id === selectedId;
-    return (
-      <div style={style}>
-        <button
-          onClick={() => {
-            if (onSelect) onSelect(doc);
-            if (onClose) onClose();
-          }}
-          className={`sidebar-item ${isActive ? 'active' : ''}`}
-        >
-          {doc.name}
-        </button>
-      </div>
-    );
+  const [openCategories, setOpenCategories] = useState({});
+
+  useEffect(() => {
+    if (docs) {
+      const initialOpenState = {};
+      Object.keys(docs).forEach(category => {
+        initialOpenState[category] = true;
+      });
+      setOpenCategories(initialOpenState);
+    }
+  }, [docs]);
+
+  const toggleCategory = (category) => {
+    setOpenCategories(prev => ({ ...prev, [category]: !prev[category] }));
   };
+
+  const getMethodClass = (method) => `method-${(method || 'other').toLowerCase()}`;
 
   return (
     <nav className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
@@ -31,14 +39,36 @@ export default function Sidebar({ docs, onSelect, selectedId, isOpen, onClose })
         <button onClick={onClose} className="sidebar-close-button">✕</button>
       </div>
       <div className="sidebar-list-container">
-        <List
-          height={600}
-          itemCount={docs.length}
-          itemSize={45}
-          width={'100%'}
-        >
-          {Row}
-        </List>
+        {Object.keys(docs).map(category => (
+          <div key={category} className="category-group">
+            <button onClick={() => toggleCategory(category)} className="category-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {categoryIcons[category] || null}
+                {category}
+              </div>
+              <span className={`category-arrow ${openCategories[category] ? 'open' : ''}`}>›</span>
+            </button>
+            {openCategories[category] && (
+              <div className="category-items">
+                {docs[category].map(doc => {
+                  const isActive = doc.id === selectedId;
+                  return (
+                    <button
+                      key={doc.id}
+                      onClick={() => {
+                        if (onSelect) onSelect(doc);
+                        if (onClose) onClose();
+                      }}
+                      className={`sidebar-item ${isActive ? 'active' : ''} ${isActive ? getMethodClass(doc.method) : ''}`}
+                    >
+                      {doc.name}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </nav>
   );

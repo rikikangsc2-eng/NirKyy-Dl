@@ -1,6 +1,6 @@
 /*
 * Lokasi: utils/api-parser.js
-* Versi: v2
+* Versi: v3
 */
 
 import fs from 'fs';
@@ -19,9 +19,7 @@ function parseRouteFile(filename) {
 
     const routeModule = module.exports;
 
-    if (typeof routeModule !== 'object' || routeModule === null) {
-      return null;
-    }
+    if (typeof routeModule !== 'object' || routeModule === null) return null;
 
     return {
       id: path.parse(filename).name,
@@ -35,20 +33,28 @@ function parseRouteFile(filename) {
 
 export function getAllRoutes() {
   const filenames = fs.readdirSync(routesDir);
-  return filenames
+  const allDocs = filenames
     .filter(filename => filename.endsWith('.js'))
     .map(filename => parseRouteFile(filename))
     .filter(Boolean)
     .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
+  const grouped = {};
+  for (const doc of allDocs) {
+    const category = doc.category || 'Uncategorized';
+    if (!grouped[category]) {
+      grouped[category] = [];
+    }
+    grouped[category].push(doc);
+  }
+  return grouped;
 }
 
 export function getRouteById(endpointId) {
   const filename = `${endpointId}.js`;
   const filePath = path.join(routesDir, filename);
 
-  if (!fs.existsSync(filePath)) {
-    return null;
-  }
+  if (!fs.existsSync(filePath)) return null;
 
   return parseRouteFile(filename);
 }

@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v10
+* Versi: v11
 */
 
 import { useState, useEffect } from 'react';
@@ -17,8 +17,11 @@ export default function Home({ docs }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (docs && docs.length > 0) {
-      handleSelectEndpoint(docs[0]);
+    if (docs && Object.keys(docs).length > 0) {
+      const firstCategory = Object.keys(docs)[0];
+      if (docs[firstCategory] && docs[firstCategory].length > 0) {
+        handleSelectEndpoint(docs[firstCategory][0]);
+      }
     }
   }, [docs]);
 
@@ -28,7 +31,9 @@ export default function Home({ docs }) {
       const initialParams = {};
       if (endpoint.params) {
         endpoint.params.forEach(p => {
-          initialParams[p.name] = p.example || '';
+          if (p.type !== 'file') {
+            initialParams[p.name] = p.example || '';
+          }
         });
       }
       setParamValues(initialParams);
@@ -49,23 +54,26 @@ export default function Home({ docs }) {
 
     try {
       let url = `/api/${selectedEndpoint.id}`;
-      const options = {
-        method: selectedEndpoint.method || 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      };
+      const options = { method: selectedEndpoint.method || 'GET' };
+      const hasFile = selectedEndpoint.params.some(p => p.type === 'file' && paramValues[p.name]);
 
-      if (options.method === 'GET') {
+      if (hasFile) {
+        const formData = new FormData();
+        Object.keys(paramValues).forEach(key => {
+          formData.append(key, paramValues[key]);
+        });
+        options.body = formData;
+      } else if (options.method !== 'GET') {
+        options.headers = { 'Content-Type': 'application/json' };
+        options.body = JSON.stringify(paramValues);
+      } else {
         const queryParams = new URLSearchParams(paramValues).toString();
         if (queryParams) url += `?${queryParams}`;
-      } else {
-        options.body = JSON.stringify(paramValues);
       }
 
       const res = await fetch(url, options);
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
-
       setApiResponse(data);
     } catch (err) {
       setError(err.message);
@@ -96,9 +104,5 @@ export default function Home({ docs }) {
 
 export async function getStaticProps() {
   const docs = getAllRoutes();
-  return {
-    props: {
-      docs,
-    },
-  };
+  return { props: { docs } };
 }

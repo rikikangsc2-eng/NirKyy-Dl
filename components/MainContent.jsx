@@ -1,7 +1,9 @@
 /*
 * Lokasi: components/MainContent.jsx
-* Versi: v2
+* Versi: v5
 */
+
+import { IconParameters } from './Icons.jsx';
 
 export default function MainContent({ endpoint, paramValues, onParamChange, onExecute, isLoading }) {
   const getMethodClass = (method) => {
@@ -26,7 +28,9 @@ export default function MainContent({ endpoint, paramValues, onParamChange, onEx
             </span>
             <span className="path-text">{endpoint.path}</span>
           </div>
-          <h2 className="section-title">Parameters</h2>
+          <h2 className="section-title">
+            <IconParameters /> Parameters
+          </h2>
           {endpoint.params && endpoint.params.length > 0 ? (
             <div className="params-form">
               {endpoint.params.map(param => (
@@ -35,13 +39,11 @@ export default function MainContent({ endpoint, paramValues, onParamChange, onEx
                     {param.name}
                     {param.optional && <span className="optional-badge">Optional</span>}
                   </label>
-                  <input
-                    id={param.name}
-                    type="text"
-                    placeholder={`Enter ${param.name}...`}
-                    value={paramValues[param.name] || ''}
-                    onChange={(e) => onParamChange(param.name, e.target.value)}
-                  />
+                  {param.type === 'file' ? (
+                    <input id={param.name} type="file" className="file-input" onChange={(e) => onParamChange(param.name, e.target.files[0])} />
+                  ) : (
+                    <input id={param.name} type="text" placeholder={`Enter ${param.name}...`} value={paramValues[param.name] || ''} onChange={(e) => onParamChange(param.name, e.target.value)} />
+                  )}
                 </div>
               ))}
               <button onClick={onExecute} disabled={isLoading} className="execute-button">
