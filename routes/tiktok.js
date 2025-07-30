@@ -1,6 +1,6 @@
 /*
 * Lokasi: routes/tiktok.js
-* Versi: v1
+* Versi: v2
 */
 
 module.exports = {
@@ -8,8 +8,9 @@ module.exports = {
   method: 'GET',
   path: '/api/tiktok',
   description: 'Mengunduh video TikTok tanpa watermark berdasarkan URL yang diberikan.',
-  params: ['url'],
-  exampleCurl: 'curl "https://nirkyy-downloader.vercel.com/api/tiktok?url=https://www.tiktok.com/.../video/..."',
+  params: [
+    { name: 'url', optional: false, example: 'https://www.tiktok.com/@tiktok/video/7084539154359897390' }
+  ],
   response: {
     status: 'success',
     author: 'NirKyy',

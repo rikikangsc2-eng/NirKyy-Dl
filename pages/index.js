@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v9
+* Versi: v10
 */
 
 import { useState, useEffect } from 'react';
@@ -27,7 +27,9 @@ export default function Home({ docs }) {
       setSelectedEndpoint(endpoint);
       const initialParams = {};
       if (endpoint.params) {
-        endpoint.params.forEach(p => { initialParams[p] = ''; });
+        endpoint.params.forEach(p => {
+          initialParams[p.name] = p.example || '';
+        });
       }
       setParamValues(initialParams);
       setApiResponse(null);

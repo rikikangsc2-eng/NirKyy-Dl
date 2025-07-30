@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/MainContent.jsx
-* Versi: v1
+* Versi: v2
 */
 
 export default function MainContent({ endpoint, paramValues, onParamChange, onExecute, isLoading }) {
@@ -30,14 +30,17 @@ export default function MainContent({ endpoint, paramValues, onParamChange, onEx
           {endpoint.params && endpoint.params.length > 0 ? (
             <div className="params-form">
               {endpoint.params.map(param => (
-                <div key={param} className="input-group">
-                  <label htmlFor={param}>{param}</label>
+                <div key={param.name} className="input-group">
+                  <label htmlFor={param.name}>
+                    {param.name}
+                    {param.optional && <span className="optional-badge">Optional</span>}
+                  </label>
                   <input
-                    id={param}
+                    id={param.name}
                     type="text"
-                    placeholder={`Enter ${param}...`}
-                    value={paramValues[param] || ''}
-                    onChange={(e) => onParamChange(param, e.target.value)}
+                    placeholder={`Enter ${param.name}...`}
+                    value={paramValues[param.name] || ''}
+                    onChange={(e) => onParamChange(param.name, e.target.value)}
                   />
                 </div>
               ))}

@@ -1,10 +1,18 @@
 /*
 * Lokasi: components/ResponsePanel.jsx
-* Versi: v2
+* Versi: v3
 */
 
 import { useState, useEffect } from 'react';
-import CodeBlock from './CodeBlock';
+import dynamic from 'next/dynamic';
+
+const DynamicCodeBlock = dynamic(
+  () => import('./CodeBlock'),
+  { 
+    ssr: false,
+    loading: () => <div className="loader"></div>
+  }
+);
 
 export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLoading, error }) {
   const [activeTab, setActiveTab] = useState('response');
@@ -56,12 +64,12 @@ export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLo
           <>
             {isLoading && <div className="loader"></div>}
             {error && <div className="error-message">{error}</div>}
-            {apiResponse && <CodeBlock code={JSON.stringify(apiResponse, null, 2)} language="json" />}
+            {apiResponse && <DynamicCodeBlock code={JSON.stringify(apiResponse, null, 2)} language="json" />}
             {!isLoading && !error && !apiResponse && <p className="text-muted">Execute a request to see the response here.</p>}
           </>
         )}
         {activeTab === 'curl' && (
-          <CodeBlock code={curlCommand} language="bash" />
+          <DynamicCodeBlock code={curlCommand} language="bash" />
         )}
       </div>
     </aside>
