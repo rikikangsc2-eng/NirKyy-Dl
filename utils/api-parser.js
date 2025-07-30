@@ -1,41 +1,46 @@
 /*
 * Lokasi: utils/api-parser.js
-* Versi: v3
+* Versi: v4
 */
 
 import fs from 'fs';
 import path from 'path';
+import { glob } from 'glob';
 
-const routesDir = path.join(process.cwd(), 'routes');
+const apiDir = path.join(process.cwd(), 'pages', 'api');
 
-function parseRouteFile(filename) {
+function parseRouteFile(filePath) {
   try {
-    const filePath = path.join(routesDir, filename);
     const fileContent = fs.readFileSync(filePath, 'utf-8');
 
     const module = { exports: {} };
     const fn = new Function('module', 'exports', fileContent);
     fn(module, module.exports);
 
-    const routeModule = module.exports;
+    const metadata = module.exports.metadata;
 
-    if (typeof routeModule !== 'object' || routeModule === null) return null;
+    if (typeof metadata !== 'object' || metadata === null) return null;
+
+    const relativePath = path.relative(apiDir, filePath);
+    const id = relativePath.replace(/\\/g, '/').replace(/\.js$/, '');
 
     return {
-      id: path.parse(filename).name,
-      ...routeModule
+      id,
+      ...metadata,
+      path: `/${id}`
     };
   } catch (e) {
-    console.error(`Error parsing ${filename}:`, e);
+    console.error(`Error parsing ${filePath}:`, e);
     return null;
   }
 }
 
 export function getAllRoutes() {
-  const filenames = fs.readdirSync(routesDir);
-  const allDocs = filenames
-    .filter(filename => filename.endsWith('.js'))
-    .map(filename => parseRouteFile(filename))
+  const filePaths = glob.sync('**/*.js', { cwd: apiDir });
+
+  const allDocs = filePaths
+    .filter(p => !p.startsWith('_') && !p.includes('['))
+    .map(p => parseRouteFile(path.join(apiDir, p)))
     .filter(Boolean)
     .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
@@ -48,13 +53,4 @@ export function getAllRoutes() {
     grouped[category].push(doc);
   }
   return grouped;
-}
-
-export function getRouteById(endpointId) {
-  const filename = `${endpointId}.js`;
-  const filePath = path.join(routesDir, filename);
-
-  if (!fs.existsSync(filePath)) return null;
-
-  return parseRouteFile(filename);
 }

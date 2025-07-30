@@ -1,12 +1,23 @@
 /*
-* Lokasi: pages/api/savegram.js
-* Versi: v2
+* Lokasi: pages/api/downloader/savegram.js
+* Versi: v1
 */
 
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import vm from 'vm';
 import { URLSearchParams } from 'url';
+
+export const metadata = {
+  name: 'SaveGram Downloader',
+  category: 'Downloader',
+  method: 'GET',
+  path: '/downloader/savegram',
+  description: 'Mengunduh konten Instagram (video, foto) melalui scrapper SaveGram.',
+  params: [
+    { name: 'url', type: 'text', optional: false, example: 'https://www.instagram.com/p/Cq5c-c5p9a6/' }
+  ]
+};
 
 const allowCors = fn => async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', true);
