@@ -1,6 +1,6 @@
 /*
 * Lokasi: utils/api-parser.js
-* Versi: v1
+* Versi: v2
 */
 
 import fs from 'fs';
@@ -14,8 +14,8 @@ function parseRouteFile(filename) {
     const fileContent = fs.readFileSync(filePath, 'utf-8');
 
     const module = { exports: {} };
-    const fn = new Function('module', 'exports', 'require', fileContent);
-    fn(module, module.exports, require);
+    const fn = new Function('module', 'exports', fileContent);
+    fn(module, module.exports);
 
     const routeModule = module.exports;
 

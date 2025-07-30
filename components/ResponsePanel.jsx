@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/ResponsePanel.jsx
-* Versi: v1
+* Versi: v2
 */
 
 import { useState, useEffect } from 'react';
@@ -9,11 +9,17 @@ import CodeBlock from './CodeBlock';
 export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLoading, error }) {
   const [activeTab, setActiveTab] = useState('response');
   const [curlCommand, setCurlCommand] = useState('');
+  const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
-    if (endpoint) {
+    if (typeof window !== 'undefined') {
+      setBaseUrl(window.location.origin);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (endpoint && baseUrl) {
       const generateCurlCommand = () => {
-        const baseUrl = 'https://nirkyy-downloader.vercel.com';
         let command = `curl --location --request ${endpoint.method || 'GET'} '${baseUrl}${endpoint.path}`;
 
         const method = (endpoint.method || 'GET').toUpperCase();
@@ -33,7 +39,7 @@ export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLo
       };
       generateCurlCommand();
     }
-  }, [endpoint, paramValues]);
+  }, [endpoint, paramValues, baseUrl]);
 
   return (
     <aside className="code-column">
