@@ -4,6 +4,8 @@
 This is a Next.js application with API endpoints that uses axios and cheerio for web scraping functionality. The project includes a savegram API endpoint for processing Instagram content.
 
 ## Recent Changes
+- **2025-01-30**: Fixed ES6 import statement errors in API routes by replacing CommonJS require() with dynamic import()
+- **2025-01-30**: Updated docs.js API endpoint to use proper file:// URLs for dynamic imports
 - **2025-01-30**: Installed missing Node.js dependencies (axios, cheerio) that were causing module not found errors
 - **2025-01-30**: Restarted the development workflow to ensure proper application startup
 
