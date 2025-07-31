@@ -32,7 +32,7 @@ export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLo
           const cleanParams = Object.fromEntries(Object.entries(paramValues).filter(([_, v]) => v !== null && v !== undefined && v !== ''));
           const queryParams = new URLSearchParams(cleanParams).toString();
           let command = `curl '${apiUrl}${queryParams ? `?${queryParams}` : ''}' \\\n`;
-          command += `  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36' \\\n`;
+          command += `  -H 'User-Agent: Mozilla/5.0' \\\n`;
           command += `  -H 'Referer: ${baseUrl}/' \\\n`;
           command += `  --compressed`;
           setCurlCommand(command);
