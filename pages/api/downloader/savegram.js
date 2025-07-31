@@ -1,50 +1,30 @@
 /*
 * Lokasi: pages/api/downloader/savegram.js
-* Versi: v2
+* Versi: v3
 */
 
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import vm from 'vm';
 import { URLSearchParams } from 'url';
+import { jsonResponse, withCorsAndJson } from '../../../utils/api-helpers';
 
 export const metadata = {
-  name: 'SaveGram Downloader',
+  name: 'Instagram Reels',
   category: 'Downloader',
-  method: 'GET',
-  path: '/downloader/savegram',
-  description: 'Mengunduh konten Instagram (video, foto) melalui scrapper SaveGram.',
+  method: 'GET, POST',
+  path: '/downloader/instagram-reels',
+  description: 'Mengunduh konten Instagram (Reels)',
   params: [
-    { name: 'url', type: 'text', optional: false, example: 'https://www.instagram.com/p/Cq5c-c5p9a6/' }
-  ],
-  response: {
-    status: 'sukses',
-    author: 'NirKyy',
-    data: [{
-      thumbnail: 'https://cdn.savegram.org/images/example.jpg',
-      kualitas: 'HD (720p)',
-      url_download: 'https://video.savegram.org/example.mp4'
-    }]
-  }
-};
-
-const allowCors = fn => async (req, res) => {
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-  return await fn(req, res);
+    { name: 'url', type: 'text', optional: false, example: 'https://www.instagram.com/reel/DAIXhDJM7ms/' }
+  ]
 };
 
 const handler = async (req, res) => {
   try {
     const url = req.query.url || (req.body && req.body.url);
     if (!url) {
-      return res.status(400).json({ status: 'gagal', pesan: 'Cuy, URL-nya mana nih? Kosong gitu.' });
+      return jsonResponse(res, 400, { success: false, message: 'Cuy, URL-nya mana nih? Kosong gitu.' });
     }
 
     const payload = new URLSearchParams({ url: url, action: 'post', lang: 'id' });
@@ -61,7 +41,7 @@ const handler = async (req, res) => {
 
     const { data: obfuscatedScript } = await axios(config);
     if (typeof obfuscatedScript !== 'string') {
-      return res.status(500).json({ status: 'gagal', pesan: 'Waduh, servernya ngasih respon aneh nih, bukan skrip.' });
+      return jsonResponse(res, 500, { success: false, message: 'Waduh, servernya ngasih respon aneh nih, bukan skrip.' });
     }
 
     let capturedHtml = '';
@@ -83,7 +63,7 @@ const handler = async (req, res) => {
     script.runInContext(context);
 
     if (!capturedHtml) {
-      return res.status(404).json({ status: 'gagal', pesan: 'Gagal dapet HTML-nya, cuy. URL-nya salah kali atau webnya udah ganti jurus.' });
+      return jsonResponse(res, 404, { success: false, message: 'Gagal dapet HTML-nya, cuy. URL-nya salah kali atau webnya udah ganti jurus.' });
     }
 
     const $ = cheerio.load(capturedHtml);
@@ -100,15 +80,15 @@ const handler = async (req, res) => {
     });
 
     if (downloads.length === 0) {
-      return res.status(404).json({ status: 'gagal', pesan: 'Nggak nemu media buat diunduh nih di HTML-nya, cuy. Coba lagi yang lain.' });
+      return jsonResponse(res, 404, { success: false, message: 'Nggak nemu media buat diunduh nih di HTML-nya, cuy. Coba lagi yang lain.' });
     }
 
-    res.status(200).json({ status: 'sukses', author: 'NirKyy', data: downloads });
+    return jsonResponse(res, 200, { success: true, message: 'Konten Instagram berhasil diunduh.', data: downloads });
 
   } catch (error) {
     const pesanError = error.response ? error.response.data : error.message;
-    res.status(500).json({ status: 'gagal total', pesan: 'Waduh, ada error nih di server, sabar ya cuy. Mungkin lagi ngambek.', detail_teknis: pesanError.toString() });
+    return jsonResponse(res, 500, { success: false, message: 'Waduh, ada error nih di server, sabar ya cuy. Mungkin lagi ngambek.', data: { detail_teknis: pesanError.toString() } });
   }
 };
 
-export default allowCors(handler);
+export default withCorsAndJson(handler);

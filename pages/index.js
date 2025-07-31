@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v12
+* Versi: v13
 */
 
 import { useState, useEffect } from 'react';
@@ -54,7 +54,10 @@ export default function Home({ docs }) {
 
     try {
       let url = `/api${selectedEndpoint.path}`;
-      const options = { method: selectedEndpoint.method || 'GET' };
+      const rawMethod = selectedEndpoint.method || 'GET';
+      const actualMethod = rawMethod.split(',')[0].trim().toUpperCase();
+      const options = { method: actualMethod };
+
       const hasFile = selectedEndpoint.params.some(p => p.type === 'file' && paramValues[p.name]);
 
       if (hasFile) {
@@ -73,7 +76,7 @@ export default function Home({ docs }) {
 
       const res = await fetch(url, options);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || data.pesan || 'Something went wrong');
+      if (!res.ok) throw new Error(data.error || data.message || 'Something went wrong');
       setApiResponse(data);
     } catch (err) {
       setError(err.message);

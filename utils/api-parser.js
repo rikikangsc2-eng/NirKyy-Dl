@@ -1,6 +1,6 @@
 /*
 * Lokasi: utils/api-parser.js
-* Versi: v6
+* Versi: v8
 */
 
 import fs from 'fs';
@@ -11,17 +11,20 @@ const apiDir = path.join(process.cwd(), 'pages', 'api');
 
 function parseRouteFile(filePath) {
   try {
-    let fileContent = fs.readFileSync(filePath, 'utf-8');
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const metadataRegex = /export const metadata\s*=\s*(\{[\s\S]*?\});/;
+    const match = fileContent.match(metadataRegex);
 
-    fileContent = fileContent.replace(/export const metadata/g, 'module.exports.metadata');
+    if (!match || !match[1]) {
+      return null;
+    }
 
-    const module = { exports: {} };
-    const fn = new Function('module', 'exports', fileContent);
-    fn(module, module.exports);
+    const metadataString = match[1];
+    const metadata = new Function(`return ${metadataString}`)();
 
-    const metadata = module.exports.metadata;
-
-    if (typeof metadata !== 'object' || metadata === null) return null;
+    if (typeof metadata !== 'object' || metadata === null) {
+      return null;
+    }
 
     const relativePath = path.relative(apiDir, filePath);
     const id = relativePath.replace(/\\/g, '/').replace(/\.js$/, '');

@@ -1,10 +1,11 @@
 /*
 * Lokasi: pages/api/[...endpoint].js
-* Versi: v5
+* Versi: v6
 */
 
-import { getRouteById } from '../../utils/api-parser';
 import formidable from 'formidable';
+import { getRouteById } from '../../utils/api-parser';
+import { jsonResponse, withCorsAndJson } from '../../utils/api-helpers';
 
 export const config = {
   api: {
@@ -12,38 +13,30 @@ export const config = {
   },
 };
 
-const allowCors = fn => async (req, res) => {
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-  return await fn(req, res);
-};
-
 const handler = async (req, res) => {
   const { endpoint } = req.query;
   const endpointId = Array.isArray(endpoint) ? endpoint.join('/') : endpoint;
   const routeModule = getRouteById(endpointId);
 
-  if (!routeModule || !routeModule.response) {
-    return res.status(404).json({ error: 'Endpoint not found or has no mock response.' });
+  if (!routeModule) {
+    return jsonResponse(res, 404, { success: false, message: 'Endpoint not found.' });
   }
 
   const form = formidable({});
   form.parse(req, (err, fields, files) => {
     if (err) {
-      res.status(500).json({ error: 'Failed to parse form data' });
-      return;
+      return jsonResponse(res, 500, { success: false, message: 'Failed to parse form data.' });
     }
 
     setTimeout(() => {
-      res.status(200).json(routeModule.response);
+      const responseData = routeModule.response || { info: "No example response defined in metadata." };
+      return jsonResponse(res, 200, {
+        success: true,
+        message: 'Mock response executed successfully.',
+        data: responseData,
+      });
     }, 1000);
   });
 };
 
-export default allowCors(handler);
+export default withCorsAndJson(handler);
