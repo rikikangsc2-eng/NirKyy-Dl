@@ -1,13 +1,14 @@
 /*
 * Lokasi: components/MainContent.jsx
-* Versi: v5
+* Versi: v6
 */
 
-import { IconParameters } from './Icons.jsx';
+import { IconParameters, IconTag } from './Icons.jsx';
 
 export default function MainContent({ endpoint, paramValues, onParamChange, onExecute, isLoading }) {
   const getMethodClass = (method) => {
-    switch ((method || '').toUpperCase()) {
+    const mainMethod = (method || 'GET').split(',')[0].trim().toUpperCase();
+    switch (mainMethod) {
       case 'GET': return 'method-get';
       case 'POST': return 'method-post';
       case 'PUT': return 'method-put';
@@ -20,7 +21,7 @@ export default function MainContent({ endpoint, paramValues, onParamChange, onEx
     <main className="main-content">
       {endpoint ? (
         <>
-          <h1>{endpoint.name}</h1>
+          <h1><IconTag /> {endpoint.name}</h1>
           <p className="description">{endpoint.description}</p>
           <div className="endpoint-info">
             <span className={`method-badge ${getMethodClass(endpoint.method)}`}>

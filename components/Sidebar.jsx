@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/Sidebar.jsx
-* Versi: v7
+* Versi: v8
 */
 
 import { useState, useEffect } from 'react';
@@ -30,13 +30,15 @@ export default function Sidebar({ docs, onSelect, selectedId, isOpen, onClose })
     setOpenCategories(prev => ({ ...prev, [category]: !prev[category] }));
   };
 
-  const getMethodClass = (method) => `method-${(method || 'other').toLowerCase()}`;
+  const getMethodClass = (method) => {
+    const mainMethod = (method || 'other').split(',')[0].trim().toLowerCase();
+    return `method-${mainMethod}`;
+  };
 
   return (
     <nav className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
       <div className="sidebar-header">
         API Endpoints
-        <button onClick={onClose} className="sidebar-close-button">✕</button>
       </div>
       <div className="sidebar-list-container">
         {Object.keys(docs).map(category => (

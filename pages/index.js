@@ -1,20 +1,34 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v13
+* Versi: v14
 */
 
 import { useState, useEffect } from 'react';
-import { getAllRoutes } from '../utils/api-parser';
 import Layout from '../components/Layout';
 import MainContent from '../components/MainContent';
 import ResponsePanel from '../components/ResponsePanel';
 
-export default function Home({ docs }) {
+export default function Home() {
+  const [docs, setDocs] = useState(null);
   const [selectedEndpoint, setSelectedEndpoint] = useState(null);
   const [paramValues, setParamValues] = useState({});
   const [apiResponse, setApiResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDocs = async () => {
+      try {
+        const res = await fetch('/api/docs');
+        const data = await res.json();
+        setDocs(data);
+      } catch (err) {
+        console.error("Failed to fetch docs:", err);
+        setError("Could not load API documentation.");
+      }
+    };
+    fetchDocs();
+  }, []);
 
   useEffect(() => {
     if (docs && Object.keys(docs).length > 0) {
@@ -85,6 +99,15 @@ export default function Home({ docs }) {
     }
   };
 
+  if (!docs) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column', gap: '20px' }}>
+        <div className="loader"></div>
+        <p>Loading Documentation...</p>
+      </div>
+    );
+  }
+
   return (
     <Layout docs={docs} onSelectEndpoint={handleSelectEndpoint} selectedId={selectedEndpoint?.id}>
       <MainContent
@@ -103,9 +126,4 @@ export default function Home({ docs }) {
       />
     </Layout>
   );
-}
-
-export async function getStaticProps() {
-  const docs = getAllRoutes();
-  return { props: { docs } };
 }
