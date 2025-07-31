@@ -1,12 +1,13 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v14
+* Versi: v16
 */
 
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import MainContent from '../components/MainContent';
 import ResponsePanel from '../components/ResponsePanel';
+import LogoLoader from '../components/LogoLoader';
 
 export default function Home() {
   const [docs, setDocs] = useState(null);
@@ -15,6 +16,9 @@ export default function Home() {
   const [apiResponse, setApiResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isFadingOut, setIsFadingOut] = useState(false);
+  const [isChangingEndpoint, setIsChangingEndpoint] = useState(false);
 
   useEffect(() => {
     const fetchDocs = async () => {
@@ -22,37 +26,50 @@ export default function Home() {
         const res = await fetch('/api/docs');
         const data = await res.json();
         setDocs(data);
+        setIsFadingOut(true);
+        setTimeout(() => setIsInitialLoad(false), 500);
       } catch (err) {
         console.error("Failed to fetch docs:", err);
         setError("Could not load API documentation.");
+        setIsInitialLoad(false);
       }
     };
     fetchDocs();
   }, []);
 
   useEffect(() => {
-    if (docs && Object.keys(docs).length > 0) {
+    if (docs && !selectedEndpoint) {
       const firstCategory = Object.keys(docs)[0];
       if (docs[firstCategory] && docs[firstCategory].length > 0) {
-        handleSelectEndpoint(docs[firstCategory][0]);
+        handleSelectEndpoint(docs[firstCategory][0], true);
       }
     }
-  }, [docs]);
+  }, [docs, selectedEndpoint]);
 
-  const handleSelectEndpoint = (endpoint) => {
-    if (endpoint) {
+  const handleSelectEndpoint = (endpoint, isInitial = false) => {
+    if (!endpoint) return;
+
+    const updateState = () => {
       setSelectedEndpoint(endpoint);
       const initialParams = {};
       if (endpoint.params) {
         endpoint.params.forEach(p => {
-          if (p.type !== 'file') {
-            initialParams[p.name] = p.example || '';
-          }
+          if (p.type !== 'file') initialParams[p.name] = p.example || '';
         });
       }
       setParamValues(initialParams);
       setApiResponse(null);
       setError(null);
+    };
+
+    if (isInitial) {
+      updateState();
+    } else {
+      setIsChangingEndpoint(true);
+      updateState();
+      setTimeout(() => {
+        setIsChangingEndpoint(false);
+      }, 1500);
     }
   };
 
@@ -71,20 +88,20 @@ export default function Home() {
       const rawMethod = selectedEndpoint.method || 'GET';
       const actualMethod = rawMethod.split(',')[0].trim().toUpperCase();
       const options = { method: actualMethod };
-
       const hasFile = selectedEndpoint.params.some(p => p.type === 'file' && paramValues[p.name]);
 
       if (hasFile) {
         const formData = new FormData();
-        Object.keys(paramValues).forEach(key => {
-          formData.append(key, paramValues[key]);
+        Object.entries(paramValues).forEach(([key, value]) => {
+          formData.append(key, value);
         });
         options.body = formData;
       } else if (options.method !== 'GET') {
         options.headers = { 'Content-Type': 'application/json' };
         options.body = JSON.stringify(paramValues);
       } else {
-        const queryParams = new URLSearchParams(paramValues);
+        const cleanParams = Object.fromEntries(Object.entries(paramValues).filter(([_, v]) => v !== null && v !== undefined && v !== ''));
+        const queryParams = new URLSearchParams(cleanParams);
         if (queryParams.toString()) url += `?${queryParams}`;
       }
 
@@ -99,11 +116,10 @@ export default function Home() {
     }
   };
 
-  if (!docs) {
+  if (isInitialLoad) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column', gap: '20px' }}>
-        <div className="loader"></div>
-        <p>Loading Documentation...</p>
+      <div className="initial-loader-container">
+        <LogoLoader size="large" fadingOut={isFadingOut} />
       </div>
     );
   }
@@ -116,6 +132,7 @@ export default function Home() {
         onParamChange={handleParamChange}
         onExecute={handleExecute}
         isLoading={isLoading}
+        isChangingEndpoint={isChangingEndpoint}
       />
       <ResponsePanel
         endpoint={selectedEndpoint}
@@ -123,6 +140,7 @@ export default function Home() {
         apiResponse={apiResponse}
         isLoading={isLoading}
         error={error}
+        isChangingEndpoint={isChangingEndpoint}
       />
     </Layout>
   );

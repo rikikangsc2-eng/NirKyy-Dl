@@ -1,18 +1,19 @@
 /*
 * Lokasi: components/ResponsePanel.jsx
-* Versi: v5
+* Versi: v7
 */
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { IconResponse, IconCurl } from './Icons.jsx';
+import LogoLoader from './LogoLoader.jsx';
 
 const DynamicCodeBlock = dynamic(
   () => import('./CodeBlock'),
   { ssr: false, loading: () => <div className="loader"></div> }
 );
 
-export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLoading, error }) {
+export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLoading, error, isChangingEndpoint }) {
   const [activeTab, setActiveTab] = useState('response');
   const [curlCommand, setCurlCommand] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
@@ -56,7 +57,6 @@ export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLo
           command += ` \\\n  --header 'Content-Type: application/json'`;
           command += ` \\\n  --data-raw '${JSON.stringify(paramValues, null, 2)}'`;
         }
-
         setCurlCommand(command);
       };
       generateCurlCommand();
@@ -65,26 +65,33 @@ export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLo
 
   return (
     <aside className="code-column">
-      <div className="tabs">
-        <button className={`tab-button ${activeTab === 'response' ? 'active' : ''}`} onClick={() => setActiveTab('response')}>
-          <IconResponse /> Response
-        </button>
-        <button className={`tab-button ${activeTab === 'curl' ? 'active' : ''}`} onClick={() => setActiveTab('curl')}>
-          <IconCurl /> cURL
-        </button>
-      </div>
-      <div className="response-container">
-        {activeTab === 'response' && (
-          <>
-            {isLoading && <div className="loader"></div>}
-            {error && <div className="error-message">{error}</div>}
-            {apiResponse && <DynamicCodeBlock code={JSON.stringify(apiResponse, null, 2)} language="json" />}
-            {!isLoading && !error && !apiResponse && <p className="text-muted">Execute a request to see the response here.</p>}
-          </>
-        )}
-        {activeTab === 'curl' && (
-          <DynamicCodeBlock code={curlCommand} language="bash" />
-        )}
+      {isChangingEndpoint && (
+        <div className="content-loader-wrapper">
+          <LogoLoader size="small" />
+        </div>
+      )}
+      <div className={`content-wrapper ${isChangingEndpoint ? 'hidden' : ''}`}>
+        <div className="tabs">
+          <button className={`tab-button ${activeTab === 'response' ? 'active' : ''}`} onClick={() => setActiveTab('response')}>
+            <IconResponse /> Response
+          </button>
+          <button className={`tab-button ${activeTab === 'curl' ? 'active' : ''}`} onClick={() => setActiveTab('curl')}>
+            <IconCurl /> cURL
+          </button>
+        </div>
+        <div className="response-container">
+          {activeTab === 'response' && (
+            <>
+              {isLoading && <div className="loader"></div>}
+              {error && <div className="error-message">{error}</div>}
+              {apiResponse && <DynamicCodeBlock code={JSON.stringify(apiResponse, null, 2)} language="json" />}
+              {!isLoading && !error && !apiResponse && <p className="text-muted">Execute a request to see the response here.</p>}
+            </>
+          )}
+          {activeTab === 'curl' && (
+            <DynamicCodeBlock code={curlCommand} language="bash" />
+          )}
+        </div>
       </div>
     </aside>
   );
