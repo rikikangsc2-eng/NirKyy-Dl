@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/api/downloader/savegram.js
-* Versi: v1
+* Versi: v2
 */
 
 import axios from 'axios';
@@ -16,7 +16,16 @@ export const metadata = {
   description: 'Mengunduh konten Instagram (video, foto) melalui scrapper SaveGram.',
   params: [
     { name: 'url', type: 'text', optional: false, example: 'https://www.instagram.com/p/Cq5c-c5p9a6/' }
-  ]
+  ],
+  response: {
+    status: 'sukses',
+    author: 'NirKyy',
+    data: [{
+      thumbnail: 'https://cdn.savegram.org/images/example.jpg',
+      kualitas: 'HD (720p)',
+      url_download: 'https://video.savegram.org/example.mp4'
+    }]
+  }
 };
 
 const allowCors = fn => async (req, res) => {

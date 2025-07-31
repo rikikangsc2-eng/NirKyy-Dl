@@ -1,6 +1,6 @@
 /*
-* Lokasi: pages/api/[endpoint].js
-* Versi: v4
+* Lokasi: pages/api/[...endpoint].js
+* Versi: v5
 */
 
 import { getRouteById } from '../../utils/api-parser';
@@ -26,10 +26,11 @@ const allowCors = fn => async (req, res) => {
 
 const handler = async (req, res) => {
   const { endpoint } = req.query;
-  const routeModule = getRouteById(endpoint);
+  const endpointId = Array.isArray(endpoint) ? endpoint.join('/') : endpoint;
+  const routeModule = getRouteById(endpointId);
 
-  if (!routeModule) {
-    return res.status(404).json({ error: 'Endpoint not found.' });
+  if (!routeModule || !routeModule.response) {
+    return res.status(404).json({ error: 'Endpoint not found or has no mock response.' });
   }
 
   const form = formidable({});
