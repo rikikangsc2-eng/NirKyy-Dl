@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/ResponsePanel.jsx
-* Versi: v4
+* Versi: v5
 */
 
 import { useState, useEffect } from 'react';
@@ -24,29 +24,39 @@ export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLo
   useEffect(() => {
     if (endpoint && baseUrl) {
       const generateCurlCommand = () => {
-        const method = (endpoint.method || 'GET').toUpperCase();
+        const method = (endpoint.method || 'GET').split(',')[0].trim().toUpperCase();
+        const apiUrl = `${baseUrl}/api${endpoint.path}`;
         const hasFile = endpoint.params.some(p => p.type === 'file');
-        let command = `curl --location --request ${method} '${baseUrl}${endpoint.path}`;
 
-        if (hasFile && method !== 'GET') {
-          command = `curl --location --request ${method} '${baseUrl}${endpoint.path}'`;
-          Object.keys(paramValues).forEach(key => {
+        if (method === 'GET' && !hasFile) {
+          const cleanParams = Object.fromEntries(Object.entries(paramValues).filter(([_, v]) => v !== null && v !== undefined && v !== ''));
+          const queryParams = new URLSearchParams(cleanParams).toString();
+          let command = `curl '${apiUrl}${queryParams ? `?${queryParams}` : ''}' \\\n`;
+          command += `  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36' \\\n`;
+          command += `  -H 'Referer: ${baseUrl}/' \\\n`;
+          command += `  --compressed`;
+          setCurlCommand(command);
+          return;
+        }
+
+        let command = `curl --location --request ${method} '${apiUrl}'`;
+
+        if (hasFile) {
+           Object.entries(paramValues).forEach(([key, value]) => {
             const paramInfo = endpoint.params.find(p => p.name === key);
-            if (paramInfo.type === 'file') {
-              command += ` \\\n--form '${key}=@"/path/to/your/file.jpg"'`;
-            } else if (paramValues[key]) {
-              command += ` \\\n--form '${key}="${paramValues[key]}"'`;
+            if (paramInfo && value) {
+               if (paramInfo.type === 'file') {
+                 command += ` \\\n  --form '${key}=@"/path/to/your/file.jpg"'`;
+               } else {
+                 command += ` \\\n  --form '${key}="${value}"'`;
+               }
             }
           });
-        } else if (method === 'GET') {
-          const queryParams = new URLSearchParams(paramValues).toString();
-          if (queryParams) command += `?${queryParams}`;
-          command += "'";
         } else {
-          command += "' \\\n--header 'Content-Type: application/json' \\\n--data-raw '";
-          command += JSON.stringify(paramValues, null, 2);
-          command += "'";
+          command += ` \\\n  --header 'Content-Type: application/json'`;
+          command += ` \\\n  --data-raw '${JSON.stringify(paramValues, null, 2)}'`;
         }
+
         setCurlCommand(command);
       };
       generateCurlCommand();
