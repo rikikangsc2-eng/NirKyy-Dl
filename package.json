@@ -22,11 +22,7 @@
     "react-window": "^1.8.7"
   },
   "devDependencies": {
-    "@types/node": "^24.1.0",
-    "@types/react": "^19.1.9",
-    "@types/react-dom": "^19.1.7",
     "eslint": "^8.26.0",
-    "eslint-config-next": "13.0.0",
-    "typescript": "^5.9.2"
+    "eslint-config-next": "13.0.0"
   }
 }
