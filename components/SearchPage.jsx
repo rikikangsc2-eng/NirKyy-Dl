@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/SearchPage.jsx
-* Versi: v2
+* Versi: v3
 */
 
 import { useState, useMemo } from 'react';
@@ -45,7 +45,7 @@ export default function SearchPage({ docs, onSelectEndpoint }) {
       </div>
       <div className="search-results">
         {searchTerm && filteredDocs.length === 0 && (
-          <p className="no-results">No features found for "{searchTerm}"</p>
+          <p className="no-results">{`No features found for "${searchTerm}"`}</p>
         )}
         {filteredDocs.map(doc => (
           <button

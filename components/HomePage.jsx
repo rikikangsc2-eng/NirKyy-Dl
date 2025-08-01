@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/HomePage.jsx
-* Versi: v2
+* Versi: v3
 */
 
 import MainContent from './MainContent';
@@ -13,7 +13,7 @@ export default function HomePage(props) {
     return (
       <div className="welcome-container">
         <h1>Welcome to NirKyy API</h1>
-        <p>Select an endpoint from the 'Category' or 'Search' tab to get started.</p>
+        <p>{`Select an endpoint from the 'Category' or 'Search' tab to get started.`}</p>
       </div>
     );
   }
