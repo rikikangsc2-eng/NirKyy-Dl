@@ -1,58 +1,144 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v2
+* Versi: v19
 */
 
-import Head from 'next/head';
-import Link from 'next/link';
-import Breadcrumb from '../components/Breadcrumb';
+import { useState, useEffect } from 'react';
+import Layout from '../components/Layout';
+import LogoLoader from '../components/LogoLoader';
+import HomePage from '../components/HomePage';
+import CategoryPage from '../components/CategoryPage';
+import SearchPage from '../components/SearchPage';
 
-export default function BlogHome() {
-  const breadcrumbPath = [{ name: 'Home' }];
+export default function AppShell() {
+  const [docs, setDocs] = useState(null);
+  const [selectedEndpoint, setSelectedEndpoint] = useState(null);
+  const [paramValues, setParamValues] = useState({});
+  const [apiResponse, setApiResponse] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isFadingOut, setIsFadingOut] = useState(false);
+  const [isChangingEndpoint, setIsChangingEndpoint] = useState(false);
+  const [activeTab, setActiveTab] = useState('home');
+
+  useEffect(() => {
+    const fetchDocs = async () => {
+      try {
+        const res = await fetch('/api/docs');
+        const data = await res.json();
+        setDocs(data);
+        setIsFadingOut(true);
+        setTimeout(() => setIsInitialLoad(false), 500);
+      } catch (err) {
+        console.error("Failed to fetch docs:", err);
+        setError("Could not load API documentation.");
+        setIsInitialLoad(false);
+      }
+    };
+    fetchDocs();
+  }, []);
+
+  const handleSelectEndpoint = (endpoint) => {
+    if (!endpoint || endpoint.id === selectedEndpoint?.id) {
+      setActiveTab('home');
+      return;
+    };
+
+    setIsChangingEndpoint(true);
+    setSelectedEndpoint(endpoint);
+
+    const initialParams = {};
+    if (endpoint.params) {
+      endpoint.params.forEach(p => {
+        if (p.type !== 'file') initialParams[p.name] = p.example || '';
+      });
+    }
+    setParamValues(initialParams);
+    setApiResponse(null);
+    setError(null);
+    setActiveTab('home');
+
+    setTimeout(() => {
+      setIsChangingEndpoint(false);
+    }, 500);
+  };
+
+  const handleParamChange = (param, value) => {
+    setParamValues(prev => ({ ...prev, [param]: value }));
+  };
+
+  const handleExecute = async () => {
+    if (!selectedEndpoint) return;
+    setIsLoading(true);
+    setError(null);
+    setApiResponse(null);
+
+    try {
+      let url = `/api${selectedEndpoint.path}`;
+      const rawMethod = selectedEndpoint.method || 'GET';
+      const actualMethod = rawMethod.split(',')[0].trim().toUpperCase();
+      const options = { method: actualMethod };
+      const hasFile = selectedEndpoint.params.some(p => p.type === 'file' && paramValues[p.name]);
+
+      if (hasFile) {
+        const formData = new FormData();
+        Object.entries(paramValues).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
+        options.body = formData;
+      } else if (options.method !== 'GET') {
+        options.headers = { 'Content-Type': 'application/json' };
+        options.body = JSON.stringify(paramValues);
+      } else {
+        const cleanParams = Object.fromEntries(Object.entries(paramValues).filter(([_, v]) => v !== null && v !== undefined && v !== ''));
+        const queryParams = new URLSearchParams(cleanParams);
+        if (queryParams.toString()) url += `?${queryParams}`;
+      }
+
+      const res = await fetch(url, options);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || data.message || 'Something went wrong');
+      setApiResponse(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const renderActivePage = () => {
+    switch (activeTab) {
+      case 'category':
+        return <CategoryPage docs={docs} onSelectEndpoint={handleSelectEndpoint} />;
+      case 'search':
+        return <SearchPage docs={docs} onSelectEndpoint={handleSelectEndpoint} />;
+      case 'home':
+      default:
+        return <HomePage
+          endpoint={selectedEndpoint}
+          paramValues={paramValues}
+          onParamChange={handleParamChange}
+          onExecute={handleExecute}
+          isLoading={isLoading}
+          apiResponse={apiResponse}
+          error={error}
+          isChangingEndpoint={isChangingEndpoint}
+        />;
+    }
+  };
+
+  if (isInitialLoad) {
+    return (
+      <div className="initial-loader-container">
+        <LogoLoader size="large" fadingOut={isFadingOut} />
+      </div>
+    );
+  }
 
   return (
-    <>
-      <Head>
-        <title>NirKyy API - Blog</title>
-        <meta name="description" content="Informasi mengenai NirKyy API" />
-        <link rel="icon" href="/api.svg" />
-      </Head>
-      <div className="blog-page-container">
-        <Breadcrumb pathSegments={breadcrumbPath} />
-        <header className="blog-header">
-          <h1>NirKyy API</h1>
-          <p>Selamat datang di pusat informasi NirKyy API.</p>
-          <Link href="/docs" legacyBehavior>
-            <a className="docs-link-button">Lihat Dokumentasi API</a>
-          </Link>
-        </header>
-        <main className="blog-content">
-          <section className="blog-section">
-            <h2>Tentang API</h2>
-            <p>
-              API ini menyediakan berbagai layanan downloader, converter, dan pencarian yang dapat diintegrasikan ke dalam proyek Anda.
-            </p>
-          </section>
-          <section className="blog-section">
-            <h2>Layanan Gratis 24 Jam</h2>
-            <p>
-              Seluruh endpoint yang tersedia dapat digunakan secara gratis, 24 jam sehari, untuk keperluan development dan personal.
-            </p>
-          </section>
-          <section className="blog-section">
-            <h2>Kontak & Kolaborasi</h2>
-            <p>
-              Jika Anda menemukan bug, memiliki saran, atau tertarik untuk berkolaborasi, jangan ragu untuk menghubungi saya melalui GitHub.
-            </p>
-            <a href="https://github.com/rikikangsc2-eng" target="_blank" rel="noopener noreferrer" className="github-link">
-              Kunjungi GitHub
-            </a>
-          </section>
-        </main>
-        <footer className="blog-footer">
-          <p>© {new Date().getFullYear()} NirKyy. All rights reserved.</p>
-        </footer>
-      </div>
-    </>
+    <Layout activeTab={activeTab} setActiveTab={setActiveTab}>
+      {renderActivePage()}
+    </Layout>
   );
 }

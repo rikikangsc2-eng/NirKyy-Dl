@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/MainContent.jsx
-* Versi: v8
+* Versi: v9
 */
 
 import { IconParameters, IconTag } from './Icons.jsx';
@@ -63,7 +63,7 @@ export default function MainContent({ endpoint, paramValues, onParamChange, onEx
             )}
           </>
         ) : (
-          <h1>Select an endpoint to view its documentation.</h1>
+          <h1>Select an endpoint to get started.</h1>
         )}
       </div>
     </main>
