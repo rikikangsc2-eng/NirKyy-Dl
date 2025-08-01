@@ -1,13 +1,14 @@
 /*
 * Lokasi: components/Layout.jsx
-* Versi: v2
+* Versi: v3
 */
 
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Sidebar from './Sidebar';
+import Breadcrumb from './Breadcrumb';
 
-export default function Layout({ children, docs, onSelectEndpoint, selectedId }) {
+export default function Layout({ children, docs, onSelectEndpoint, selectedId, breadcrumbPath }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function Layout({ children, docs, onSelectEndpoint, selectedId })
   return (
     <>
       <Head>
-        <title>NirKyy Downloader</title>
+        <title>NirKyy API Docs</title>
         <meta name="description" content="API Documentation for NirKyy Downloader Services" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href="/api.svg" />
@@ -52,7 +53,10 @@ export default function Layout({ children, docs, onSelectEndpoint, selectedId })
           onSelect={onSelectEndpoint}
           selectedId={selectedId}
         />
-        {children}
+        <div className="content-area">
+          <Breadcrumb pathSegments={breadcrumbPath} />
+          {children}
+        </div>
       </div>
     </>
   );

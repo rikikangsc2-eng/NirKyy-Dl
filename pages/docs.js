@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/docs.js
-* Versi: v17
+* Versi: v18
 */
 
 import { useState, useEffect } from 'react';
@@ -19,6 +19,7 @@ export default function DocsPage() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [isChangingEndpoint, setIsChangingEndpoint] = useState(false);
+  const [breadcrumbPath, setBreadcrumbPath] = useState([]);
 
   useEffect(() => {
     const fetchDocs = async () => {
@@ -45,6 +46,19 @@ export default function DocsPage() {
       }
     }
   }, [docs, selectedEndpoint]);
+
+  useEffect(() => {
+    const baseBreadcrumb = [{ name: 'Home', href: '/' }, { name: 'Docs' }];
+    if (selectedEndpoint) {
+      setBreadcrumbPath([
+        ...baseBreadcrumb,
+        { name: selectedEndpoint.category },
+        { name: selectedEndpoint.name }
+      ]);
+    } else {
+      setBreadcrumbPath(baseBreadcrumb);
+    }
+  }, [selectedEndpoint]);
 
   const handleSelectEndpoint = (endpoint, isInitial = false) => {
     if (!endpoint) return;
@@ -125,23 +139,30 @@ export default function DocsPage() {
   }
 
   return (
-    <Layout docs={docs} onSelectEndpoint={handleSelectEndpoint} selectedId={selectedEndpoint?.id}>
-      <MainContent
-        endpoint={selectedEndpoint}
-        paramValues={paramValues}
-        onParamChange={handleParamChange}
-        onExecute={handleExecute}
-        isLoading={isLoading}
-        isChangingEndpoint={isChangingEndpoint}
-      />
-      <ResponsePanel
-        endpoint={selectedEndpoint}
-        paramValues={paramValues}
-        apiResponse={apiResponse}
-        isLoading={isLoading}
-        error={error}
-        isChangingEndpoint={isChangingEndpoint}
-      />
+    <Layout
+      docs={docs}
+      onSelectEndpoint={handleSelectEndpoint}
+      selectedId={selectedEndpoint?.id}
+      breadcrumbPath={breadcrumbPath}
+    >
+      <div className="content-split">
+        <MainContent
+          endpoint={selectedEndpoint}
+          paramValues={paramValues}
+          onParamChange={handleParamChange}
+          onExecute={handleExecute}
+          isLoading={isLoading}
+          isChangingEndpoint={isChangingEndpoint}
+        />
+        <ResponsePanel
+          endpoint={selectedEndpoint}
+          paramValues={paramValues}
+          apiResponse={apiResponse}
+          isLoading={isLoading}
+          error={error}
+          isChangingEndpoint={isChangingEndpoint}
+        />
+      </div>
     </Layout>
   );
 }

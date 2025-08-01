@@ -1,12 +1,15 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v1
+* Versi: v2
 */
 
 import Head from 'next/head';
 import Link from 'next/link';
+import Breadcrumb from '../components/Breadcrumb';
 
 export default function BlogHome() {
+  const breadcrumbPath = [{ name: 'Home' }];
+
   return (
     <>
       <Head>
@@ -15,6 +18,7 @@ export default function BlogHome() {
         <link rel="icon" href="/api.svg" />
       </Head>
       <div className="blog-page-container">
+        <Breadcrumb pathSegments={breadcrumbPath} />
         <header className="blog-header">
           <h1>NirKyy API</h1>
           <p>Selamat datang di pusat informasi NirKyy API.</p>
