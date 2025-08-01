@@ -1,6 +1,6 @@
 /*
 * Lokasi: styles/globals.css
-* Versi: v12
+* Versi: v13
 */
 
 :root {
@@ -169,3 +169,25 @@ h1 svg { color: var(--primary-color); }
   .main-content, .code-column { padding: 1rem; }
   .endpoint-info { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
 }
+
+.blog-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  background: var(--bg-color);
+}
+.blog-header { margin-bottom: 3rem; }
+.blog-header h1 { font-size: 3.5rem; color: var(--primary-color); margin-bottom: 0.5rem; justify-content: center; }
+.blog-header p { font-size: 1.25rem; color: var(--text-muted); }
+.docs-link-button { display: inline-block; margin-top: 1.5rem; padding: 12px 24px; background-color: var(--primary-color); color: white; border-radius: 8px; font-weight: 600; text-decoration: none; transition: background-color 0.2s, transform 0.2s; }
+.docs-link-button:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+.blog-content { max-width: 800px; width: 100%; display: grid; grid-template-columns: 1fr; gap: 2rem; }
+.blog-section { background-color: var(--sidebar-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); }
+.blog-section h2 { font-size: 1.75rem; color: var(--accent-color); margin-top: 0; margin-bottom: 1rem; }
+.blog-section p { color: var(--text-color); line-height: 1.6; }
+.github-link { display: inline-block; margin-top: 1rem; color: var(--primary-color); font-weight: 500; text-decoration: underline; }
+.blog-footer { margin-top: 4rem; color: var(--text-muted); font-size: 0.9rem; }
