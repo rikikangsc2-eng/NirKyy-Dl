@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/SearchPage.jsx
-* Versi: v1
+* Versi: v2
 */
 
 import { useState, useMemo } from 'react';

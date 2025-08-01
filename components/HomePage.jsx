@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/HomePage.jsx
-* Versi: v1
+* Versi: v2
 */
 
 import MainContent from './MainContent';
