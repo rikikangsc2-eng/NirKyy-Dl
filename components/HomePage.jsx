@@ -1,13 +1,24 @@
 /*
 * Lokasi: components/HomePage.jsx
-* Versi: v3
+* Versi: v4
 */
 
 import MainContent from './MainContent';
-import ResponsePanel from './ResponsePanel';
 
 export default function HomePage(props) {
-  const { endpoint, paramValues, onParamChange, onExecute, isLoading, apiResponse, error, isChangingEndpoint } = props;
+  const {
+    endpoint,
+    paramValues,
+    onParamChange,
+    onExecute,
+    isLoading,
+    apiResponse,
+    error,
+    isChangingEndpoint,
+    onShowResponse,
+  } = props;
+
+  const isResponseReady = !!(apiResponse || error);
 
   if (!endpoint) {
     return (
@@ -19,7 +30,7 @@ export default function HomePage(props) {
   }
 
   return (
-    <div className="content-split">
+    <div className="home-page-container">
       <MainContent
         endpoint={endpoint}
         paramValues={paramValues}
@@ -28,14 +39,11 @@ export default function HomePage(props) {
         isLoading={isLoading}
         isChangingEndpoint={isChangingEndpoint}
       />
-      <ResponsePanel
-        endpoint={endpoint}
-        paramValues={paramValues}
-        apiResponse={apiResponse}
-        isLoading={isLoading}
-        error={error}
-        isChangingEndpoint={isChangingEndpoint}
-      />
+      {isResponseReady && (
+        <button className="show-response-button" onClick={onShowResponse}>
+          Lihat Respon
+        </button>
+      )}
     </div>
   );
 }

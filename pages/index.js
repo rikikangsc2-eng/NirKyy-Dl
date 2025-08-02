@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v20
+* Versi: v21
 */
 
 import { useState, useEffect } from 'react';
@@ -24,6 +24,7 @@ export default function AppShell() {
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [isChangingEndpoint, setIsChangingEndpoint] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
+  const [isResponsePanelOpen, setIsResponsePanelOpen] = useState(false);
 
   useEffect(() => {
     const fetchDocs = async () => {
@@ -92,6 +93,7 @@ export default function AppShell() {
     setIsLoading(true);
     setError(null);
     setApiResponse(null);
+    setIsResponsePanelOpen(true);
 
     try {
       let url = `/api${selectedEndpoint.path}`;
@@ -126,6 +128,9 @@ export default function AppShell() {
     }
   };
 
+  const closeResponsePanel = () => setIsResponsePanelOpen(false);
+  const openResponsePanel = () => setIsResponsePanelOpen(true);
+
   const renderActivePage = () => {
     switch (activeTab) {
       case 'category':
@@ -145,6 +150,7 @@ export default function AppShell() {
           apiResponse={apiResponse}
           error={error}
           isChangingEndpoint={isChangingEndpoint}
+          onShowResponse={openResponsePanel}
         />;
     }
   };
@@ -158,7 +164,17 @@ export default function AppShell() {
   }
 
   return (
-    <Layout activeTab={activeTab} setActiveTab={handleSetActiveTab}>
+    <Layout 
+      activeTab={activeTab} 
+      setActiveTab={handleSetActiveTab}
+      isResponsePanelOpen={isResponsePanelOpen}
+      closeResponsePanel={closeResponsePanel}
+      endpoint={selectedEndpoint}
+      paramValues={paramValues}
+      apiResponse={apiResponse}
+      isLoading={isLoading}
+      error={error}
+    >
       {renderActivePage()}
     </Layout>
   );

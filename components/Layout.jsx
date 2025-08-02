@@ -1,12 +1,22 @@
 /*
 * Lokasi: components/Layout.jsx
-* Versi: v4
+* Versi: v5
 */
 
 import Head from 'next/head';
 import BottomNavbar from './BottomNavbar';
+import ResponsePanel from './ResponsePanel';
 
-export default function Layout({ children, activeTab, setActiveTab }) {
+export default function Layout(props) {
+  const { 
+    children, 
+    activeTab, 
+    setActiveTab,
+    isResponsePanelOpen,
+    closeResponsePanel,
+    ...responsePanelProps 
+  } = props;
+
   return (
     <>
       <Head>
@@ -21,6 +31,9 @@ export default function Layout({ children, activeTab, setActiveTab }) {
           {children}
         </main>
         <BottomNavbar activeTab={activeTab} setActiveTab={setActiveTab} />
+        {isResponsePanelOpen && (
+          <ResponsePanel onClose={closeResponsePanel} {...responsePanelProps} />
+        )}
       </div>
     </>
   );

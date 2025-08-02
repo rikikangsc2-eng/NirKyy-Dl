@@ -1,19 +1,18 @@
 /*
 * Lokasi: components/ResponsePanel.jsx
-* Versi: v7
+* Versi: v8
 */
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { IconResponse, IconCurl } from './Icons.jsx';
-import LogoLoader from './LogoLoader.jsx';
+import { IconResponse, IconCurl, IconX } from './Icons.jsx';
 
 const DynamicCodeBlock = dynamic(
   () => import('./CodeBlock'),
   { ssr: false, loading: () => <div className="loader"></div> }
 );
 
-export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLoading, error, isChangingEndpoint }) {
+export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLoading, error, onClose }) {
   const [activeTab, setActiveTab] = useState('response');
   const [curlCommand, setCurlCommand] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
@@ -63,14 +62,16 @@ export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLo
     }
   }, [endpoint, paramValues, baseUrl]);
 
+  useEffect(() => {
+    if(apiResponse || error) setActiveTab('response');
+  }, [apiResponse, error]);
+
   return (
-    <aside className="code-column">
-      {isChangingEndpoint && (
-        <div className="content-loader-wrapper">
-          <LogoLoader size="small" />
-        </div>
-      )}
-      <div className={`content-wrapper ${isChangingEndpoint ? 'hidden' : ''}`}>
+    <div className="response-panel-overlay" onClick={onClose}>
+      <div className="response-panel-content" onClick={(e) => e.stopPropagation()}>
+        <button className="close-panel-button" onClick={onClose}>
+          <IconX />
+        </button>
         <div className="tabs">
           <button className={`tab-button ${activeTab === 'response' ? 'active' : ''}`} onClick={() => setActiveTab('response')}>
             <IconResponse /> Response
@@ -93,6 +94,6 @@ export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLo
           )}
         </div>
       </div>
-    </aside>
+    </div>
   );
 }
