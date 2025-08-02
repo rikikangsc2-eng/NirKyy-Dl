@@ -1,16 +1,19 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v19
+* Versi: v20
 */
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import LogoLoader from '../components/LogoLoader';
 import HomePage from '../components/HomePage';
 import CategoryPage from '../components/CategoryPage';
 import SearchPage from '../components/SearchPage';
+import BlogPage from '../components/BlogPage';
 
 export default function AppShell() {
+  const router = useRouter();
   const [docs, setDocs] = useState(null);
   const [selectedEndpoint, setSelectedEndpoint] = useState(null);
   const [paramValues, setParamValues] = useState({});
@@ -39,9 +42,25 @@ export default function AppShell() {
     fetchDocs();
   }, []);
 
+  useEffect(() => {
+    if (router.isReady) {
+      const pageQuery = router.query.page || 'home';
+      if (['home', 'category', 'search', 'blog'].includes(pageQuery)) {
+        setActiveTab(pageQuery);
+      } else {
+        setActiveTab('home');
+      }
+    }
+  }, [router.isReady, router.query.page]);
+
+  const handleSetActiveTab = (tab) => {
+    setActiveTab(tab);
+    router.push({ pathname: '/', query: { page: tab } }, undefined, { shallow: true });
+  };
+
   const handleSelectEndpoint = (endpoint) => {
     if (!endpoint || endpoint.id === selectedEndpoint?.id) {
-      setActiveTab('home');
+      handleSetActiveTab('home');
       return;
     };
 
@@ -57,7 +76,7 @@ export default function AppShell() {
     setParamValues(initialParams);
     setApiResponse(null);
     setError(null);
-    setActiveTab('home');
+    handleSetActiveTab('home');
 
     setTimeout(() => {
       setIsChangingEndpoint(false);
@@ -113,6 +132,8 @@ export default function AppShell() {
         return <CategoryPage docs={docs} onSelectEndpoint={handleSelectEndpoint} />;
       case 'search':
         return <SearchPage docs={docs} onSelectEndpoint={handleSelectEndpoint} />;
+      case 'blog':
+        return <BlogPage />;
       case 'home':
       default:
         return <HomePage
@@ -137,7 +158,7 @@ export default function AppShell() {
   }
 
   return (
-    <Layout activeTab={activeTab} setActiveTab={setActiveTab}>
+    <Layout activeTab={activeTab} setActiveTab={handleSetActiveTab}>
       {renderActivePage()}
     </Layout>
   );

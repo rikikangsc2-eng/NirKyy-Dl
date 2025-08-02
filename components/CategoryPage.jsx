@@ -1,9 +1,9 @@
 /*
 * Lokasi: components/CategoryPage.jsx
-* Versi: v1
+* Versi: v2
 */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { IconDownloader, IconConverter, IconSearch, IconGame } from './Icons.jsx';
 
 const categoryIcons = {
@@ -15,16 +15,6 @@ const categoryIcons = {
 
 export default function CategoryPage({ docs, onSelectEndpoint }) {
   const [openCategories, setOpenCategories] = useState({});
-
-  useEffect(() => {
-    if (docs) {
-      const initialOpenState = {};
-      Object.keys(docs).forEach(category => {
-        initialOpenState[category] = true;
-      });
-      setOpenCategories(initialOpenState);
-    }
-  }, [docs]);
 
   const toggleCategory = (category) => {
     setOpenCategories(prev => ({ ...prev, [category]: !prev[category] }));

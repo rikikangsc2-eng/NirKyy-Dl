@@ -1,6 +1,6 @@
 /*
 * Lokasi: styles/globals.css
-* Versi: v15
+* Versi: v17
 */
 
 :root {
@@ -131,27 +131,16 @@ h1 svg { color: var(--primary-color); }
 .welcome-container h1 { font-size: 2.5rem; }
 .welcome-container p { font-size: 1.2rem; color: var(--text-muted); }
 
-.blog-page-container { background: var(--bg-color); overflow-y: auto; height: 100vh; }
-.blog-page-container .breadcrumb-container { align-self: flex-start; width: 100%; text-align: left; background-color: transparent; border: none; padding: 2rem 2rem 0; }
-.blog-header { text-align: center; margin-bottom: 3rem; padding: 0 2rem; }
+.blog-page-container { background: var(--bg-color); padding: 2rem; }
+.blog-header { text-align: center; margin-bottom: 3rem; }
 .blog-header h1 { font-size: 3.5rem; color: var(--primary-color); margin-bottom: 0.5rem; justify-content: center; }
 .blog-header p { font-size: 1.25rem; color: var(--text-muted); }
-.docs-link-button { display: inline-block; margin-top: 1.5rem; padding: 12px 24px; background-color: var(--primary-color); color: white; border-radius: 8px; font-weight: 600; text-decoration: none; transition: background-color 0.2s, transform 0.2s; }
-.docs-link-button:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
-.blog-content { max-width: 800px; width: 100%; display: grid; grid-template-columns: 1fr; gap: 2rem; margin: 0 auto; padding: 0 2rem; }
+.blog-content { max-width: 800px; width: 100%; display: grid; grid-template-columns: 1fr; gap: 2rem; margin: 0 auto; }
 .blog-section { background-color: var(--primary-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: left; }
 .blog-section h2 { font-size: 1.75rem; color: var(--accent-color); margin-top: 0; margin-bottom: 1rem; }
 .blog-section p { color: var(--text-color); line-height: 1.6; }
 .github-link { display: inline-block; margin-top: 1rem; color: var(--primary-color); font-weight: 500; text-decoration: underline; }
 .blog-footer { margin-top: 4rem; padding: 2rem; color: var(--text-muted); font-size: 0.9rem; text-align: center; }
-.breadcrumb-container { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); flex-shrink: 0; background-color: var(--primary-bg); }
-.breadcrumb-list { display: flex; align-items: center; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
-.breadcrumb-item { display: flex; align-items: center; font-size: 0.9rem; }
-.breadcrumb-item svg { margin-right: 8px; color: var(--text-muted); }
-.breadcrumb-link { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-.breadcrumb-link:hover { color: var(--primary-color); }
-.breadcrumb-separator { margin: 0 0.75rem; color: var(--text-muted); }
-.breadcrumb-current { color: var(--text-color); font-weight: 500; }
 
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @keyframes trace-path { 50% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -310; } }

@@ -1,9 +1,8 @@
 /*
 * Lokasi: components/BottomNavbar.jsx
-* Versi: v1
+* Versi: v2
 */
 
-import Link from 'next/link';
 import { IconHome, IconCategory, IconSearch, IconBlog } from './Icons';
 
 export default function BottomNavbar({ activeTab, setActiveTab }) {
@@ -11,6 +10,7 @@ export default function BottomNavbar({ activeTab, setActiveTab }) {
     { name: 'home', label: 'Home', Icon: IconHome },
     { name: 'category', label: 'Category', Icon: IconCategory },
     { name: 'search', label: 'Search', Icon: IconSearch },
+    { name: 'blog', label: 'Blog', Icon: IconBlog },
   ];
 
   return (
@@ -25,12 +25,6 @@ export default function BottomNavbar({ activeTab, setActiveTab }) {
           <span className="nav-label">{label}</span>
         </button>
       ))}
-      <Link href="/blog" legacyBehavior>
-        <a className="nav-item">
-          <IconBlog />
-          <span className="nav-label">Blog</span>
-        </a>
-      </Link>
     </nav>
   );
 }
