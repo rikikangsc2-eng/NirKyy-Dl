@@ -1,11 +1,12 @@
 /*
 * Lokasi: components/ResponsePanel.jsx
-* Versi: v8
+* Versi: v9
 */
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { IconResponse, IconCurl, IconX } from './Icons.jsx';
+import LogoLoader from './LogoLoader.jsx';
 
 const DynamicCodeBlock = dynamic(
   () => import('./CodeBlock'),
@@ -83,7 +84,11 @@ export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLo
         <div className="response-container">
           {activeTab === 'response' && (
             <>
-              {isLoading && <div className="loader"></div>}
+              {isLoading && (
+                <div className="response-loader-container">
+                  <LogoLoader size="small" />
+                </div>
+              )}
               {error && <div className="error-message">{error}</div>}
               {apiResponse && <DynamicCodeBlock code={JSON.stringify(apiResponse, null, 2)} language="json" />}
               {!isLoading && !error && !apiResponse && <p className="text-muted">Execute a request to see the response here.</p>}

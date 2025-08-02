@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/HomePage.jsx
-* Versi: v4
+* Versi: v5
 */
 
 import MainContent from './MainContent';
@@ -14,7 +14,6 @@ export default function HomePage(props) {
     isLoading,
     apiResponse,
     error,
-    isChangingEndpoint,
     onShowResponse,
   } = props;
 
@@ -37,7 +36,6 @@ export default function HomePage(props) {
         onParamChange={onParamChange}
         onExecute={onExecute}
         isLoading={isLoading}
-        isChangingEndpoint={isChangingEndpoint}
       />
       {isResponseReady && (
         <button className="show-response-button" onClick={onShowResponse}>

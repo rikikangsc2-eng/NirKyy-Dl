@@ -1,12 +1,11 @@
 /*
 * Lokasi: components/MainContent.jsx
-* Versi: v9
+* Versi: v10
 */
 
 import { IconParameters, IconTag } from './Icons.jsx';
-import LogoLoader from './LogoLoader.jsx';
 
-export default function MainContent({ endpoint, paramValues, onParamChange, onExecute, isLoading, isChangingEndpoint }) {
+export default function MainContent({ endpoint, paramValues, onParamChange, onExecute, isLoading }) {
   const getMethodClass = (method) => {
     const mainMethod = (method || 'GET').split(',')[0].trim().toUpperCase();
     switch (mainMethod) {
@@ -20,12 +19,7 @@ export default function MainContent({ endpoint, paramValues, onParamChange, onEx
 
   return (
     <main className="main-content">
-      {isChangingEndpoint && (
-        <div className="content-loader-wrapper">
-          <LogoLoader size="small" />
-        </div>
-      )}
-      <div className={`content-wrapper ${isChangingEndpoint ? 'hidden' : ''}`}>
+      <div className="content-wrapper">
         {endpoint ? (
           <>
             <h1><IconTag /> {endpoint.name}</h1>

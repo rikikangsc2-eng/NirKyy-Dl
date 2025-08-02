@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v21
+* Versi: v22
 */
 
 import { useState, useEffect } from 'react';
@@ -22,7 +22,6 @@ export default function AppShell() {
   const [error, setError] = useState(null);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [isFadingOut, setIsFadingOut] = useState(false);
-  const [isChangingEndpoint, setIsChangingEndpoint] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [isResponsePanelOpen, setIsResponsePanelOpen] = useState(false);
 
@@ -65,7 +64,6 @@ export default function AppShell() {
       return;
     };
 
-    setIsChangingEndpoint(true);
     setSelectedEndpoint(endpoint);
 
     const initialParams = {};
@@ -78,10 +76,6 @@ export default function AppShell() {
     setApiResponse(null);
     setError(null);
     handleSetActiveTab('home');
-
-    setTimeout(() => {
-      setIsChangingEndpoint(false);
-    }, 500);
   };
 
   const handleParamChange = (param, value) => {
@@ -149,7 +143,6 @@ export default function AppShell() {
           isLoading={isLoading}
           apiResponse={apiResponse}
           error={error}
-          isChangingEndpoint={isChangingEndpoint}
           onShowResponse={openResponsePanel}
         />;
     }
