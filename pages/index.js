@@ -1,16 +1,24 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v22
+* Versi: v23
 */
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import Layout from '../components/Layout';
 import LogoLoader from '../components/LogoLoader';
-import HomePage from '../components/HomePage';
-import CategoryPage from '../components/CategoryPage';
-import SearchPage from '../components/SearchPage';
-import BlogPage from '../components/BlogPage';
+
+const PageLoader = () => (
+  <div className="page-loader-container">
+    <div className="loader"></div>
+  </div>
+);
+
+const DynamicHomePage = dynamic(() => import('../components/HomePage'), { loading: PageLoader });
+const DynamicCategoryPage = dynamic(() => import('../components/CategoryPage'), { loading: PageLoader });
+const DynamicSearchPage = dynamic(() => import('../components/SearchPage'), { loading: PageLoader });
+const DynamicBlogPage = dynamic(() => import('../components/BlogPage'), { loading: PageLoader });
 
 export default function AppShell() {
   const router = useRouter();
@@ -128,14 +136,14 @@ export default function AppShell() {
   const renderActivePage = () => {
     switch (activeTab) {
       case 'category':
-        return <CategoryPage docs={docs} onSelectEndpoint={handleSelectEndpoint} />;
+        return <DynamicCategoryPage docs={docs} onSelectEndpoint={handleSelectEndpoint} />;
       case 'search':
-        return <SearchPage docs={docs} onSelectEndpoint={handleSelectEndpoint} />;
+        return <DynamicSearchPage docs={docs} onSelectEndpoint={handleSelectEndpoint} />;
       case 'blog':
-        return <BlogPage />;
+        return <DynamicBlogPage />;
       case 'home':
       default:
-        return <HomePage
+        return <DynamicHomePage
           endpoint={selectedEndpoint}
           paramValues={paramValues}
           onParamChange={handleParamChange}
