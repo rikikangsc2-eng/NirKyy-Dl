@@ -1,11 +1,13 @@
 /*
 * Lokasi: components/Layout.jsx
-* Versi: v5
+* Versi: v6
 */
 
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import BottomNavbar from './BottomNavbar';
-import ResponsePanel from './ResponsePanel';
+
+const DynamicResponsePanel = dynamic(() => import('./ResponsePanel'));
 
 export default function Layout(props) {
   const { 
@@ -32,7 +34,7 @@ export default function Layout(props) {
         </main>
         <BottomNavbar activeTab={activeTab} setActiveTab={setActiveTab} />
         {isResponsePanelOpen && (
-          <ResponsePanel onClose={closeResponsePanel} {...responsePanelProps} />
+          <DynamicResponsePanel onClose={closeResponsePanel} {...responsePanelProps} />
         )}
       </div>
     </>
