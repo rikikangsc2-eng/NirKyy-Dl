@@ -1,8 +1,3 @@
-/*
-* Lokasi: README.md
-* Versi: v1
-*/
-
 # NirKyy API - Dokumentasi Interaktif
 
 Repositori ini berisi kode sumber untuk antarmuka dokumentasi interaktif NirKyy API. Aplikasi ini dibangun dengan Next.js dan dirancang dengan pendekatan *mobile-first* untuk menyediakan pengalaman yang mulus dalam menjelajahi dan menguji endpoint API.
