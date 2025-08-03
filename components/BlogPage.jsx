@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/BlogPage.jsx
-* Versi: v2
+* Versi: v3
 */
 
 export default function BlogPage() {
@@ -22,6 +22,16 @@ export default function BlogPage() {
           <p>
             Seluruh endpoint yang tersedia dapat digunakan secara gratis, 24 jam sehari, untuk keperluan development dan personal.
           </p>
+        </section>
+        <section className="blog-section">
+          <h2>Informasi Domain</h2>
+          <p>
+            API ini dapat diakses melalui beberapa domain. Silakan gunakan salah satu dari alamat berikut:
+          </p>
+          <ul>
+            <li>nirkyy-kun.vercel.app</li>
+            <li>nirkyy-api.duckdns.org</li>
+          </ul>
         </section>
         <section className="blog-section">
           <h2>Kontak & Kolaborasi</h2>

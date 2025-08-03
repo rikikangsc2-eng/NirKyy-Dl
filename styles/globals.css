@@ -1,6 +1,6 @@
 /*
 * Lokasi: styles/globals.css
-* Versi: v21
+* Versi: v22
 */
 
 :root {
@@ -149,6 +149,8 @@ h1 svg { color: var(--primary-color); }
 .blog-section { background-color: var(--primary-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: left; }
 .blog-section h2 { font-size: 1.75rem; color: var(--accent-color); margin-top: 0; margin-bottom: 1rem; }
 .blog-section p { color: var(--text-color); line-height: 1.6; }
+.blog-section ul { list-style-type: none; padding-left: 0; margin-top: 1rem; }
+.blog-section li { background-color: var(--bg-color); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 0.5rem; font-family: 'Fira Code', 'Courier New', monospace; }
 .github-link { display: inline-block; margin-top: 1rem; color: var(--primary-color); font-weight: 500; text-decoration: underline; }
 .blog-footer { margin-top: 4rem; padding: 2rem; color: var(--text-muted); font-size: 0.9rem; text-align: center; }
 
