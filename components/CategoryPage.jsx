@@ -1,16 +1,17 @@
 /*
 * Lokasi: components/CategoryPage.jsx
-* Versi: v2
+* Versi: v3
 */
 
 import { useState } from 'react';
-import { IconDownloader, IconConverter, IconSearch, IconGame } from './Icons.jsx';
+import { IconDownloader, IconConverter, IconSearch, IconGame, IconOther } from './Icons.jsx';
 
 const categoryIcons = {
   'Downloader': <IconDownloader />,
   'Converter': <IconConverter />,
   'Search': <IconSearch />,
   'Game & Fun': <IconGame />,
+  'Other': <IconOther />,
 };
 
 export default function CategoryPage({ docs, onSelectEndpoint }) {

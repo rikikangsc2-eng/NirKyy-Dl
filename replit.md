@@ -1,10 +1,13 @@
 
+
 # Next.js Application Project
 
 ## Overview
 This is a Next.js application built as a single-page app (SPA) for API documentation. It features a modern, mobile-first design with a bottom navigation bar.
 
 ## Recent Changes
+- **2025-02-03**: Added a stateful API counter feature with a PostgreSQL database.
+- **2025-02-03**: Implemented a `/api/cron` endpoint for automatic database cleanup of old records.
 - **2025-02-02**: Major UI overhaul. Replaced sidebar with a bottom navigation bar (Home, Category, Search, Blog).
 - **2025-02-02**: Converted the documentation page into the main application at the root (`/`).
 - **2025-02-02**: Moved the blog content to a dedicated `/blog` page.
@@ -23,6 +26,7 @@ This is a Next.js application built as a single-page app (SPA) for API documenta
   - react-syntax-highlighter: Code highlighting
   - formidable: File upload handling
   - glob: File pattern matching
+  - pg: PostgreSQL client for Node.js
 
 ## Development Setup
 - Run `npm install` to install dependencies.
@@ -30,4 +34,4 @@ This is a Next.js application built as a single-page app (SPA) for API documenta
 - The application runs on port 3000.
 
 ## Current Status
-The application now functions as an SPA with a modern UI. Dependencies are installed, and the dev server is ready.
+The application now functions as an SPA with database connectivity. Dependencies are installed, and the dev server is ready.
