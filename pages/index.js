@@ -1,13 +1,13 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v23
+* Versi: v24
 */
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import Layout from '../components/Layout';
-import LogoLoader from '../components/LogoLoader';
+import { getAllRoutes } from '../utils/api-parser';
 
 const PageLoader = () => (
   <div className="page-loader-container">
@@ -20,35 +20,15 @@ const DynamicCategoryPage = dynamic(() => import('../components/CategoryPage'), 
 const DynamicSearchPage = dynamic(() => import('../components/SearchPage'), { loading: PageLoader });
 const DynamicBlogPage = dynamic(() => import('../components/BlogPage'), { loading: PageLoader });
 
-export default function AppShell() {
+export default function AppShell({ docs }) {
   const router = useRouter();
-  const [docs, setDocs] = useState(null);
   const [selectedEndpoint, setSelectedEndpoint] = useState(null);
   const [paramValues, setParamValues] = useState({});
   const [apiResponse, setApiResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [isFadingOut, setIsFadingOut] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [isResponsePanelOpen, setIsResponsePanelOpen] = useState(false);
-
-  useEffect(() => {
-    const fetchDocs = async () => {
-      try {
-        const res = await fetch('/api/docs');
-        const data = await res.json();
-        setDocs(data);
-        setIsFadingOut(true);
-        setTimeout(() => setIsInitialLoad(false), 500);
-      } catch (err) {
-        console.error("Failed to fetch docs:", err);
-        setError("Could not load API documentation.");
-        setIsInitialLoad(false);
-      }
-    };
-    fetchDocs();
-  }, []);
 
   useEffect(() => {
     if (router.isReady) {
@@ -156,14 +136,6 @@ export default function AppShell() {
     }
   };
 
-  if (isInitialLoad) {
-    return (
-      <div className="initial-loader-container">
-        <LogoLoader size="large" fadingOut={isFadingOut} />
-      </div>
-    );
-  }
-
   return (
     <Layout 
       activeTab={activeTab} 
@@ -179,4 +151,13 @@ export default function AppShell() {
       {renderActivePage()}
     </Layout>
   );
+}
+
+export async function getStaticProps() {
+  const docs = getAllRoutes();
+  return {
+    props: {
+      docs,
+    },
+  };
 }
