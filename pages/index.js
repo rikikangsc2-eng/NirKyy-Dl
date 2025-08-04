@@ -1,9 +1,9 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v26
+* Versi: v27
 */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import Layout from '../components/Layout';
@@ -30,6 +30,13 @@ export default function AppShell({ docs }) {
   const [activeTab, setActiveTab] = useState('home');
   const [isResponsePanelOpen, setIsResponsePanelOpen] = useState(false);
   const [isPanelClosing, setIsPanelClosing] = useState(false);
+  const [baseUrl, setBaseUrl] = useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setBaseUrl(window.location.origin);
+    }
+  }, []);
 
   useEffect(() => {
     if (router.isReady) {
@@ -41,6 +48,42 @@ export default function AppShell({ docs }) {
       }
     }
   }, [router.isReady, router.query.page]);
+
+  const seoProps = useMemo(() => {
+    const defaultTitle = 'NirKyy API - Interactive Documentation';
+    const defaultDesc = 'Explore and test NirKyy API endpoints for downloader, converter, and search services directly from your browser. Mobile-first, dynamic, and interactive.';
+    const canonicalUrl = `${baseUrl}${router.asPath}`;
+    const ogImageUrl = `${baseUrl}/api.svg`;
+
+    let pageTitle = defaultTitle;
+    let pageDescription = defaultDesc;
+
+    if (selectedEndpoint && activeTab === 'home') {
+      pageTitle = `${selectedEndpoint.name} - NirKyy API Docs`;
+      pageDescription = selectedEndpoint.description || `Test the ${selectedEndpoint.name} endpoint on the NirKyy API platform.`;
+    } else {
+      switch (activeTab) {
+        case 'home':
+          pageTitle = 'Welcome - NirKyy API Docs';
+          pageDescription = 'Select an endpoint from the Category or Search tab to get started with the interactive NirKyy API documentation.';
+          break;
+        case 'category':
+          pageTitle = 'API Categories - NirKyy API Docs';
+          pageDescription = 'Browse all available API endpoints grouped by category: Downloader, Converter, Search, Game & Fun, and more.';
+          break;
+        case 'search':
+          pageTitle = 'Search API - NirKyy API Docs';
+          pageDescription = 'Quickly find any API endpoint by name, category, or description using the powerful search feature.';
+          break;
+        case 'blog':
+          pageTitle = 'Blog & Information - NirKyy API Docs';
+          pageDescription = 'Find information about the NirKyy API, contact details, updates, and collaboration opportunities.';
+          break;
+      }
+    }
+
+    return { pageTitle, pageDescription, canonicalUrl, ogImageUrl };
+  }, [activeTab, selectedEndpoint, baseUrl, router.asPath]);
 
   const handleSetActiveTab = (tab) => {
     if (activeTab === tab) return;
@@ -149,6 +192,7 @@ export default function AppShell({ docs }) {
 
   return (
     <Layout 
+      {...seoProps}
       activeTab={activeTab} 
       setActiveTab={handleSetActiveTab}
       isResponsePanelOpen={isResponsePanelOpen}

@@ -1,3 +1,5 @@
+
+
 # NirKyy API - Dokumentasi Interaktif
 
 Repositori ini berisi kode sumber untuk antarmuka dokumentasi interaktif NirKyy API. Aplikasi ini dibangun dengan Next.js dan dirancang dengan pendekatan *mobile-first* untuk menyediakan pengalaman yang mulus dalam menjelajahi dan menguji endpoint API.
@@ -18,6 +20,7 @@ API dan dokumentasi ini dapat diakses melalui:
 - **Panel Respons**: Panel respons yang dapat digeser ke atas menampilkan hasil JSON, pesan error, dan contoh perintah cURL yang sudah jadi.
 - **Pencarian & Kategori**: Temukan endpoint dengan mudah melalui fitur pencarian atau jelajahi berdasarkan kategori yang telah ditentukan.
 - **Halaman Blog**: Berisi informasi umum, pembaruan, dan detail kontak.
+- **SEO-Friendly**: Judul dan deskripsi halaman dinamis untuk optimasi mesin pencari.
 
 ## Teknologi yang Digunakan
 
@@ -91,6 +94,9 @@ Untuk menambahkan endpoint baru dan menampilkannya secara otomatis di dokumentas
 3.  Implementasikan logika handler API Anda di file yang sama.
 
 Sistem akan secara otomatis mendeteksi file baru ini dan menambahkannya ke daftar endpoint di antarmuka pengguna saat server development di-refresh.
+
+## Keywords
+API, REST API, NirKyy, Downloader, Converter, Search, Game, Fun, Interactive Documentation, Next.js, Vercel, API Documentation, API Platform, Developer Tools.
 
 ---
 
