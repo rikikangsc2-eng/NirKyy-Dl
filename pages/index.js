@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v24
+* Versi: v26
 */
 
 import { useState, useEffect } from 'react';
@@ -29,6 +29,7 @@ export default function AppShell({ docs }) {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('home');
   const [isResponsePanelOpen, setIsResponsePanelOpen] = useState(false);
+  const [isPanelClosing, setIsPanelClosing] = useState(false);
 
   useEffect(() => {
     if (router.isReady) {
@@ -42,6 +43,7 @@ export default function AppShell({ docs }) {
   }, [router.isReady, router.query.page]);
 
   const handleSetActiveTab = (tab) => {
+    if (activeTab === tab) return;
     setActiveTab(tab);
     router.push({ pathname: '/', query: { page: tab } }, undefined, { shallow: true });
   };
@@ -110,8 +112,17 @@ export default function AppShell({ docs }) {
     }
   };
 
-  const closeResponsePanel = () => setIsResponsePanelOpen(false);
-  const openResponsePanel = () => setIsResponsePanelOpen(true);
+  const closeResponsePanel = () => {
+    setIsPanelClosing(true);
+    setTimeout(() => {
+      setIsResponsePanelOpen(false);
+      setIsPanelClosing(false);
+    }, 300);
+  };
+
+  const openResponsePanel = () => {
+    setIsResponsePanelOpen(true);
+  };
 
   const renderActivePage = () => {
     switch (activeTab) {
@@ -141,6 +152,7 @@ export default function AppShell({ docs }) {
       activeTab={activeTab} 
       setActiveTab={handleSetActiveTab}
       isResponsePanelOpen={isResponsePanelOpen}
+      isPanelClosing={isPanelClosing}
       closeResponsePanel={closeResponsePanel}
       endpoint={selectedEndpoint}
       paramValues={paramValues}

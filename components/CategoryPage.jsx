@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/CategoryPage.jsx
-* Versi: v3
+* Versi: v4
 */
 
 import { useState } from 'react';
@@ -27,8 +27,8 @@ export default function CategoryPage({ docs, onSelectEndpoint }) {
 
   return (
     <div className="category-page">
-      {Object.keys(docs).map(category => (
-        <div key={category} className="category-group">
+      {Object.keys(docs).map((category, catIndex) => (
+        <div key={category} className="category-group" style={{ animationDelay: `${catIndex * 100}ms` }}>
           <button onClick={() => toggleCategory(category)} className="category-header">
             <div className="category-title">
               {categoryIcons[category] || null}
@@ -38,11 +38,12 @@ export default function CategoryPage({ docs, onSelectEndpoint }) {
           </button>
           {openCategories[category] && (
             <div className="category-items">
-              {docs[category].map(doc => (
+              {docs[category].map((doc, docIndex) => (
                 <button
                   key={doc.id}
                   onClick={() => onSelectEndpoint(doc)}
                   className="category-item-button"
+                  style={{ animationDelay: `${docIndex * 50}ms` }}
                 >
                   {doc.name}
                 </button>

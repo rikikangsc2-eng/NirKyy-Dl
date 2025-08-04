@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/SearchPage.jsx
-* Versi: v3
+* Versi: v4
 */
 
 import { useState, useMemo } from 'react';
@@ -47,11 +47,12 @@ export default function SearchPage({ docs, onSelectEndpoint }) {
         {searchTerm && filteredDocs.length === 0 && (
           <p className="no-results">{`No features found for "${searchTerm}"`}</p>
         )}
-        {filteredDocs.map(doc => (
+        {filteredDocs.map((doc, index) => (
           <button
             key={doc.id}
             className="search-result-item"
             onClick={() => onSelectEndpoint(doc)}
+            style={{ animationDelay: `${index * 75}ms` }}
           >
             <span className="result-category">{doc.category}</span>
             <span className="result-name">{doc.name}</span>

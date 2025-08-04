@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/ResponsePanel.jsx
-* Versi: v9
+* Versi: v10
 */
 
 import { useState, useEffect } from 'react';
@@ -13,7 +13,7 @@ const DynamicCodeBlock = dynamic(
   { ssr: false, loading: () => <div className="loader"></div> }
 );
 
-export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLoading, error, onClose }) {
+export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLoading, error, onClose, isClosing }) {
   const [activeTab, setActiveTab] = useState('response');
   const [curlCommand, setCurlCommand] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
@@ -67,9 +67,12 @@ export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLo
     if(apiResponse || error) setActiveTab('response');
   }, [apiResponse, error]);
 
+  const overlayClass = `response-panel-overlay ${isClosing ? 'overlay-fade-out' : 'overlay-fade-in'}`;
+  const contentClass = `response-panel-content ${isClosing ? 'panel-slide-down' : 'panel-slide-up'}`;
+
   return (
-    <div className="response-panel-overlay" onClick={onClose}>
-      <div className="response-panel-content" onClick={(e) => e.stopPropagation()}>
+    <div className={overlayClass} onClick={onClose}>
+      <div className={contentClass} onClick={(e) => e.stopPropagation()}>
         <button className="close-panel-button" onClick={onClose}>
           <IconX />
         </button>

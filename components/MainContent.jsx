@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/MainContent.jsx
-* Versi: v10
+* Versi: v11
 */
 
 import { IconParameters, IconTag } from './Icons.jsx';
@@ -18,7 +18,7 @@ export default function MainContent({ endpoint, paramValues, onParamChange, onEx
   };
 
   return (
-    <main className="main-content">
+    <main className="main-content" key={endpoint?.id || 'welcome'}>
       <div className="content-wrapper">
         {endpoint ? (
           <>
@@ -35,8 +35,8 @@ export default function MainContent({ endpoint, paramValues, onParamChange, onEx
             </h2>
             {endpoint.params && endpoint.params.length > 0 ? (
               <div className="params-form">
-                {endpoint.params.map(param => (
-                  <div key={param.name} className="input-group">
+                {endpoint.params.map((param, index) => (
+                  <div key={param.name} className="input-group" style={{ animationDelay: `${index * 100}ms` }}>
                     <label htmlFor={param.name}>
                       {param.name}
                       {param.optional && <span className="optional-badge">Optional</span>}
@@ -48,7 +48,7 @@ export default function MainContent({ endpoint, paramValues, onParamChange, onEx
                     )}
                   </div>
                 ))}
-                <button onClick={onExecute} disabled={isLoading} className="execute-button">
+                <button onClick={onExecute} disabled={isLoading} className="execute-button" style={{ animationDelay: `${endpoint.params.length * 100}ms` }}>
                   {isLoading ? 'Executing...' : 'Execute'}
                 </button>
               </div>
