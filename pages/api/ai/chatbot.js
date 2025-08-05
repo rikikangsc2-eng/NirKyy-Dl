@@ -18,8 +18,8 @@ export const metadata = {
     { name: 'user', type: 'text', optional: false, example: 'user_12345' },
     { name: 'prompt', type: 'text', optional: false, example: 'Siapa penemu bohlam lampu?' },
     { name: 'system', type: 'text', optional: true, example: 'You are a helpful assistant.' },
-    { name: 'web', type: 'text', optional: true, example: 'true' },
-    { name: 'cleardb', type: 'text', optional: true, example: 'true' },
+    { name: 'web', type: 'text', optional: true, example: 'false' },
+    { name: 'cleardb', type: 'text', optional: true, example: 'false' },
   ]
 };
 
