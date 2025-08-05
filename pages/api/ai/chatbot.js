@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/api/ai/chatbot.js
-* Versi: v4
+* Versi: v5
 */
 
 import axios from 'axios';
@@ -19,7 +19,7 @@ export const metadata = {
     { name: 'prompt', type: 'text', optional: false, example: 'Siapa penemu bohlam lampu?' },
     { name: 'system', type: 'text', optional: true, example: 'You are a helpful assistant.' },
     { name: 'web', type: 'text', optional: true, example: 'true' },
-    { name: 'cleardb', type: 'text', optional: true, example: 'false' },
+    { name: 'cleardb', type: 'text', optional: true, example: 'true' },
   ]
 };
 
@@ -85,9 +85,11 @@ const handler = async (req, res) => {
     await client.query(CREATE_TABLE_QUERY);
 
     if (cleardb === 'true') {
-      await client.query('DROP TABLE IF EXISTS blackbox_chat_history');
-      await client.query(CREATE_TABLE_QUERY);
-      return jsonResponse(res, 200, { success: true, message: 'Database berhasil dibersihkan.' });
+      if (!user) {
+        return jsonResponse(res, 400, { success: false, message: "Parameter 'user' wajib diisi untuk membersihkan riwayat chat." });
+      }
+      await client.query('DELETE FROM blackbox_chat_history WHERE user_id = $1', [user]);
+      return jsonResponse(res, 200, { success: true, message: `Riwayat chat untuk pengguna '${user}' berhasil dibersihkan.` });
     }
 
     if (!prompt || !user) {
