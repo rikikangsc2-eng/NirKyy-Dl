@@ -1,18 +1,15 @@
 /*
 * Lokasi: components/SearchPage.jsx
-* Versi: v5
+* Versi: v6
 */
 
+
 import { useState, useMemo } from 'react';
-import { useRouter } from 'next/router';
+import { useAppContext } from '../context/AppContext';
 
 export default function SearchPage({ docs }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const router = useRouter();
-
-  const handleSelectEndpoint = (doc) => {
-    router.push(`/endpoint/${doc.id}`);
-  };
+  const { handleSelectEndpoint } = useAppContext();
 
   const filteredDocs = useMemo(() => {
     if (!searchTerm) {

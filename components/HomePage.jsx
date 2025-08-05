@@ -1,25 +1,27 @@
 /*
 * Lokasi: components/HomePage.jsx
-* Versi: v6
+* Versi: v7
 */
 
-import MainContent from './MainContent';
 
-export default function HomePage(props) {
+import MainContent from './MainContent';
+import { useAppContext } from '../context/AppContext';
+
+export default function HomePage() {
   const {
-    endpoint,
+    currentEndpoint,
     paramValues,
-    onParamChange,
-    onExecute,
+    handleParamChange,
+    handleExecute,
     isLoading,
     apiResponse,
     error,
-    onShowResponse,
-  } = props;
+    openResponsePanel,
+  } = useAppContext();
 
   const isResponseReady = !!(apiResponse || error);
 
-  if (!endpoint) {
+  if (!currentEndpoint) {
     return (
       <div className="welcome-container">
         <h1>Welcome to NirKyy API</h1>
@@ -31,14 +33,14 @@ export default function HomePage(props) {
   return (
     <div className="home-page-container">
       <MainContent
-        endpoint={endpoint}
+        endpoint={currentEndpoint}
         paramValues={paramValues}
-        onParamChange={onParamChange}
-        onExecute={onExecute}
+        onParamChange={handleParamChange}
+        onExecute={handleExecute}
         isLoading={isLoading}
       />
       {isResponseReady && (
-        <button className="show-response-button" onClick={onShowResponse}>
+        <button className="show-response-button" onClick={openResponsePanel}>
           View Response
         </button>
       )}

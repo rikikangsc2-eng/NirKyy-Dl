@@ -1,7 +1,8 @@
 /*
 * Lokasi: components/BottomNavbar.jsx
-* Versi: v5
+* Versi: v6
 */
+
 
 import Link from 'next/link';
 import { IconHome, IconCategory, IconSearch, IconStatus, IconBlog } from './Icons';

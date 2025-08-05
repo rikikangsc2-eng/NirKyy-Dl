@@ -1,13 +1,15 @@
 /*
 * Lokasi: pages/endpoint/[...id].js
-* Versi: v2
+* Versi: v3
 */
 
-import { useState, useEffect } from 'react';
+
+import { useEffect, useState } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
-import Layout from '../../components/Layout';
 import { getAllRoutes, getRouteById } from '../../utils/api-parser';
+import { useAppContext } from '../../context/AppContext';
 
 const PageLoader = () => (
   <div className="page-loader-container">
@@ -19,12 +21,7 @@ const DynamicHomePage = dynamic(() => import('../../components/HomePage'), { loa
 
 export default function EndpointPage({ endpoint }) {
   const router = useRouter();
-  const [paramValues, setParamValues] = useState({});
-  const [apiResponse, setApiResponse] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [isResponsePanelOpen, setIsResponsePanelOpen] = useState(false);
-  const [isPanelClosing, setIsPanelClosing] = useState(false);
+  const { setCurrentEndpoint } = useAppContext();
   const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
@@ -34,78 +31,16 @@ export default function EndpointPage({ endpoint }) {
   }, []);
 
   useEffect(() => {
-    if (endpoint?.params) {
-      const initialParams = {};
-      endpoint.params.forEach(p => {
-        if (p.type !== 'file') {
-          initialParams[p.name] = p.example || '';
-        }
-      });
-      setParamValues(initialParams);
+    if (endpoint) {
+      setCurrentEndpoint(endpoint);
     }
-  }, [endpoint]);
+  }, [endpoint, setCurrentEndpoint]);
 
-  if (router.isFallback) {
+  if (router.isFallback || !endpoint) {
     return <PageLoader />;
   }
 
-  const handleParamChange = (param, value) => {
-    setParamValues(prev => ({ ...prev, [param]: value }));
-  };
-
-  const handleExecute = async () => {
-    if (!endpoint) return;
-    setIsLoading(true);
-    setError(null);
-    setApiResponse(null);
-    setIsResponsePanelOpen(true);
-
-    try {
-      let url = `/api${endpoint.path}`;
-      const rawMethod = endpoint.method || 'GET';
-      const actualMethod = rawMethod.split(',')[0].trim().toUpperCase();
-      const options = { method: actualMethod };
-      const hasFile = endpoint.params.some(p => p.type === 'file' && paramValues[p.name]);
-
-      if (hasFile) {
-        const formData = new FormData();
-        Object.entries(paramValues).forEach(([key, value]) => {
-          formData.append(key, value);
-        });
-        options.body = formData;
-      } else if (options.method !== 'GET') {
-        options.headers = { 'Content-Type': 'application/json' };
-        options.body = JSON.stringify(paramValues);
-      } else {
-        const cleanParams = Object.fromEntries(Object.entries(paramValues).filter(([_, v]) => v !== null && v !== undefined && v !== ''));
-        const queryParams = new URLSearchParams(cleanParams);
-        if (queryParams.toString()) url += `?${queryParams}`;
-      }
-
-      const res = await fetch(url, options);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || data.message || 'Something went wrong');
-      setApiResponse(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const closeResponsePanel = () => {
-    setIsPanelClosing(true);
-    setTimeout(() => {
-      setIsResponsePanelOpen(false);
-      setIsPanelClosing(false);
-    }, 300);
-  };
-
-  const openResponsePanel = () => {
-    setIsResponsePanelOpen(true);
-  };
-
-  const seoProps = {
+  const seo = {
     pageTitle: `${endpoint.name} - NirKyy API Docs`,
     pageDescription: endpoint.description || `Test the ${endpoint.name} endpoint on the NirKyy API platform.`,
     canonicalUrl: `${baseUrl}${router.asPath}`,
@@ -113,29 +48,30 @@ export default function EndpointPage({ endpoint }) {
   };
 
   return (
-    <Layout
-      {...seoProps}
-      activeTab="home"
-      isResponsePanelOpen={isResponsePanelOpen}
-      isPanelClosing={isPanelClosing}
-      closeResponsePanel={closeResponsePanel}
-      endpoint={endpoint}
-      paramValues={paramValues}
-      apiResponse={apiResponse}
-      isLoading={isLoading}
-      error={error}
-    >
-      <DynamicHomePage
-        endpoint={endpoint}
-        paramValues={paramValues}
-        onParamChange={handleParamChange}
-        onExecute={handleExecute}
-        isLoading={isLoading}
-        apiResponse={apiResponse}
-        error={error}
-        onShowResponse={openResponsePanel}
-      />
-    </Layout>
+    <>
+      <Head>
+        <title>{seo.pageTitle}</title>
+        <meta name="description" content={seo.pageDescription} />
+        <meta name="keywords" content={`NirKyy API, ${endpoint.name}, ${endpoint.category}, API Documentation`} />
+        <meta name="author" content="NirKyy" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={seo.canonicalUrl} />
+        <link rel="icon" href="/api.svg" />
+        <link rel="apple-touch-icon" href="/api.svg" />
+        <meta property="og:title" content={seo.pageTitle} />
+        <meta property="og:description" content={seo.pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={seo.canonicalUrl} />
+        <meta property="og:image" content={seo.ogImageUrl} />
+        <meta property="og:site_name" content="NirKyy API Docs" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.pageTitle} />
+        <meta name="twitter:description" content={seo.pageDescription} />
+        <meta name="twitter:image" content={seo.ogImageUrl} />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+      </Head>
+      <DynamicHomePage />
+    </>
   );
 }
 

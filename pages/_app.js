@@ -1,21 +1,25 @@
 /*
 * Lokasi: pages/_app.js
-* Versi: v2
+* Versi: v3
 */
+
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import '../styles/globals.css';
+import { AppProvider } from '../context/AppContext';
+import Layout from '../components/Layout';
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
   useEffect(() => {
     const handleStart = (url) => {
-      console.log(`Loading: ${url}`);
-      NProgress.start();
+      if (url !== router.asPath) {
+        NProgress.start();
+      }
     };
     const handleStop = () => {
       NProgress.done();
@@ -32,7 +36,13 @@ function MyApp({ Component, pageProps }) {
     };
   }, [router]);
 
-  return <Component {...pageProps} />;
+  return (
+    <AppProvider>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </AppProvider>
+  );
 }
 
 export default MyApp;

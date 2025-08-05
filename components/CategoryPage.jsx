@@ -1,11 +1,12 @@
 /*
 * Lokasi: components/CategoryPage.jsx
-* Versi: v6
+* Versi: v7
 */
 
+
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import { IconDownloader, IconConverter, IconSearch, IconGame, IconOther, IconAI } from './Icons.jsx';
+import { useAppContext } from '../context/AppContext.js';
 
 const categoryIcons = {
   'AI': <IconAI />,
@@ -18,14 +19,10 @@ const categoryIcons = {
 
 export default function CategoryPage({ docs }) {
   const [openCategories, setOpenCategories] = useState({});
-  const router = useRouter();
+  const { handleSelectEndpoint } = useAppContext();
 
   const toggleCategory = (category) => {
     setOpenCategories(prev => ({ ...prev, [category]: !prev[category] }));
-  };
-
-  const handleSelectEndpoint = (doc) => {
-    router.push(`/endpoint/${doc.id}`);
   };
 
   if (!docs) {
