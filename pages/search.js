@@ -1,12 +1,13 @@
 /*
-* Lokasi: pages/index.js
-* Versi: v30
+* Lokasi: pages/search.js
+* Versi: v1
 */
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import Layout from '../components/Layout';
+import { getAllRoutes } from '../utils/api-parser';
 
 const PageLoader = () => (
   <div className="page-loader-container">
@@ -14,9 +15,9 @@ const PageLoader = () => (
   </div>
 );
 
-const DynamicHomePage = dynamic(() => import('../components/HomePage'), { loading: PageLoader });
+const DynamicSearchPage = dynamic(() => import('../components/SearchPage'), { loading: PageLoader });
 
-export default function AppShell() {
+export default function Search({ docs }) {
   const router = useRouter();
   const [baseUrl, setBaseUrl] = useState('');
 
@@ -27,15 +28,24 @@ export default function AppShell() {
   }, []);
 
   const seoProps = {
-    pageTitle: 'NirKyy API - Interactive Documentation',
-    pageDescription: 'Explore and test NirKyy API endpoints for downloader, converter, and search services directly from your browser.',
+    pageTitle: 'Search API - NirKyy API Docs',
+    pageDescription: 'Quickly find any API endpoint by name, category, or description using the powerful search feature.',
     canonicalUrl: `${baseUrl}${router.asPath}`,
     ogImageUrl: `${baseUrl}/api.svg`,
   };
 
   return (
-    <Layout {...seoProps} activeTab="home">
-      <DynamicHomePage />
+    <Layout {...seoProps} activeTab="search">
+      <DynamicSearchPage docs={docs} />
     </Layout>
   );
+}
+
+export async function getStaticProps() {
+  const docs = getAllRoutes();
+  return {
+    props: {
+      docs,
+    },
+  };
 }

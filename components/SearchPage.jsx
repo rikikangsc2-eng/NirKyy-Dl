@@ -1,12 +1,18 @@
 /*
 * Lokasi: components/SearchPage.jsx
-* Versi: v4
+* Versi: v5
 */
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/router';
 
-export default function SearchPage({ docs, onSelectEndpoint }) {
+export default function SearchPage({ docs }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const router = useRouter();
+
+  const handleSelectEndpoint = (doc) => {
+    router.push(`/endpoint/${doc.id}`);
+  };
 
   const filteredDocs = useMemo(() => {
     if (!searchTerm) {
@@ -51,7 +57,7 @@ export default function SearchPage({ docs, onSelectEndpoint }) {
           <button
             key={doc.id}
             className="search-result-item"
-            onClick={() => onSelectEndpoint(doc)}
+            onClick={() => handleSelectEndpoint(doc)}
             style={{ animationDelay: `${index * 75}ms` }}
           >
             <span className="result-category">{doc.category}</span>

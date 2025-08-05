@@ -1,6 +1,6 @@
 /*
 * Lokasi: styles/globals.css
-* Versi: v25
+* Versi: v26
 */
 
 :root {
@@ -199,4 +199,17 @@ h1 svg { color: var(--primary-color); }
   .response-panel-content { width: 80%; max-width: 1024px; }
   .main-content { padding: 2rem 3rem; }
   .monitor-list { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+/* NProgress Customization */
+#nprogress .bar {
+  background: var(--primary-color) !important;
+  height: 3px !important;
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px var(--primary-color), 0 0 5px var(--primary-color) !important;
+}
+#nprogress .spinner-icon {
+  border-top-color: var(--primary-color) !important;
+  border-left-color: var(--primary-color) !important;
 }

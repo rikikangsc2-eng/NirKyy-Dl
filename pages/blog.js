@@ -1,6 +1,6 @@
 /*
-* Lokasi: pages/index.js
-* Versi: v30
+* Lokasi: pages/blog.js
+* Versi: v1
 */
 
 import { useState, useEffect } from 'react';
@@ -14,9 +14,9 @@ const PageLoader = () => (
   </div>
 );
 
-const DynamicHomePage = dynamic(() => import('../components/HomePage'), { loading: PageLoader });
+const DynamicBlogPage = dynamic(() => import('../components/BlogPage'), { loading: PageLoader });
 
-export default function AppShell() {
+export default function Blog() {
   const router = useRouter();
   const [baseUrl, setBaseUrl] = useState('');
 
@@ -27,15 +27,15 @@ export default function AppShell() {
   }, []);
 
   const seoProps = {
-    pageTitle: 'NirKyy API - Interactive Documentation',
-    pageDescription: 'Explore and test NirKyy API endpoints for downloader, converter, and search services directly from your browser.',
+    pageTitle: 'Blog & Information - NirKyy API Docs',
+    pageDescription: 'Find information about the NirKyy API, contact details, updates, and collaboration opportunities.',
     canonicalUrl: `${baseUrl}${router.asPath}`,
     ogImageUrl: `${baseUrl}/api.svg`,
   };
 
   return (
-    <Layout {...seoProps} activeTab="home">
-      <DynamicHomePage />
+    <Layout {...seoProps} activeTab="blog">
+      <DynamicBlogPage />
     </Layout>
   );
 }
