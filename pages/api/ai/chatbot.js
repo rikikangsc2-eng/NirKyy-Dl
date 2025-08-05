@@ -58,10 +58,10 @@ const handler = async (req, res) => {
     history.push({ role: 'user', content: prompt });
 
     const payload = {
-      message: `${prompt} /no_think`,
+      message: `${prompt}`,
       system_prompt: system || 'You are a helpful assistant.',
       use_search: false,
-      temperature: 0.6,
+      temperature: 0.8,
       history: history,
     };
 
