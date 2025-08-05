@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/api/ai/chatbot.js
-* Versi: v2
+* Versi: v3
 */
 
 import axios from 'axios';
@@ -17,7 +17,7 @@ export const metadata = {
     { name: 'user', type: 'text', optional: false, example: 'user_12345' },
     { name: 'prompt', type: 'text', optional: false, example: 'Siapa kamu?' },
     { name: 'system', type: 'text', optional: true, example: 'You are a helpful assistant.' },
-    { name: 'stream', type: 'text', optional: true, example: 'true' }
+    { name: 'stream', type: 'text', optional: true, example: 'false' }
   ]
 };
 
@@ -58,11 +58,11 @@ const handler = async (req, res) => {
     history.push({ role: 'user', content: prompt });
 
     const payload = {
-      message: prompt,
+      message: `${prompt} /no_think`,
       system_prompt: system || 'You are a helpful assistant.',
       use_search: false,
-      temperature: 1,
-      history: history.slice(0, -1),
+      temperature: 0.6,
+      history: history,
     };
 
     const externalApiUrl = 'https://tecuts-chat.hf.space/chat/stream';
