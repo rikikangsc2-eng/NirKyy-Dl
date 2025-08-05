@@ -1,15 +1,16 @@
 /*
 * Lokasi: components/BottomNavbar.jsx
-* Versi: v3
+* Versi: v4
 */
 
-import { IconHome, IconCategory, IconSearch, IconBlog } from './Icons';
+import { IconHome, IconCategory, IconSearch, IconStatus, IconBlog } from './Icons';
 
 export default function BottomNavbar({ activeTab, setActiveTab }) {
   const navItems = [
     { name: 'home', label: 'Home', Icon: IconHome },
     { name: 'category', label: 'Category', Icon: IconCategory },
     { name: 'search', label: 'Search', Icon: IconSearch },
+    { name: 'status', label: 'Status', Icon: IconStatus },
     { name: 'blog', label: 'Blog', Icon: IconBlog },
   ];
 

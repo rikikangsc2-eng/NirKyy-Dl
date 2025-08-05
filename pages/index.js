@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v27
+* Versi: v29
 */
 
 import { useState, useEffect, useMemo } from 'react';
@@ -18,6 +18,7 @@ const PageLoader = () => (
 const DynamicHomePage = dynamic(() => import('../components/HomePage'), { loading: PageLoader });
 const DynamicCategoryPage = dynamic(() => import('../components/CategoryPage'), { loading: PageLoader });
 const DynamicSearchPage = dynamic(() => import('../components/SearchPage'), { loading: PageLoader });
+const DynamicStatusPage = dynamic(() => import('../components/StatusPage'), { loading: PageLoader });
 const DynamicBlogPage = dynamic(() => import('../components/BlogPage'), { loading: PageLoader });
 
 export default function AppShell({ docs }) {
@@ -32,6 +33,10 @@ export default function AppShell({ docs }) {
   const [isPanelClosing, setIsPanelClosing] = useState(false);
   const [baseUrl, setBaseUrl] = useState('');
 
+  const [statusData, setStatusData] = useState(null);
+  const [isStatusLoading, setIsStatusLoading] = useState(false);
+  const [statusError, setStatusError] = useState(null);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setBaseUrl(window.location.origin);
@@ -41,13 +46,34 @@ export default function AppShell({ docs }) {
   useEffect(() => {
     if (router.isReady) {
       const pageQuery = router.query.page || 'home';
-      if (['home', 'category', 'search', 'blog'].includes(pageQuery)) {
+      if (['home', 'category', 'search', 'status', 'blog'].includes(pageQuery)) {
         setActiveTab(pageQuery);
       } else {
         setActiveTab('home');
       }
     }
   }, [router.isReady, router.query.page]);
+
+  useEffect(() => {
+    const fetchStatusData = async () => {
+      setIsStatusLoading(true);
+      setStatusError(null);
+      try {
+        const response = await fetch('/api/uptime-status');
+        if (!response.ok) throw new Error('Failed to fetch status data');
+        const result = await response.json();
+        setStatusData(result.data);
+      } catch (err) {
+        setStatusError(err.message);
+      } finally {
+        setIsStatusLoading(false);
+      }
+    };
+
+    if (activeTab === 'status' && !statusData && !isStatusLoading) {
+      fetchStatusData();
+    }
+  }, [activeTab, statusData, isStatusLoading]);
 
   const seoProps = useMemo(() => {
     const defaultTitle = 'NirKyy API - Interactive Documentation';
@@ -74,6 +100,10 @@ export default function AppShell({ docs }) {
         case 'search':
           pageTitle = 'Search API - NirKyy API Docs';
           pageDescription = 'Quickly find any API endpoint by name, category, or description using the powerful search feature.';
+          break;
+        case 'status':
+          pageTitle = 'API Status - NirKyy API Docs';
+          pageDescription = 'Check the real-time uptime status and historical performance of NirKyy API domains.';
           break;
         case 'blog':
           pageTitle = 'Blog & Information - NirKyy API Docs';
@@ -173,6 +203,8 @@ export default function AppShell({ docs }) {
         return <DynamicCategoryPage docs={docs} onSelectEndpoint={handleSelectEndpoint} />;
       case 'search':
         return <DynamicSearchPage docs={docs} onSelectEndpoint={handleSelectEndpoint} />;
+      case 'status':
+        return <DynamicStatusPage data={statusData} isLoading={isStatusLoading} error={statusError} />;
       case 'blog':
         return <DynamicBlogPage />;
       case 'home':
