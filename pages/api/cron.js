@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/api/cron.js
-* Versi: v2
+* Versi: v3
 */
 
 import { Pool } from 'pg';
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       `);
 
       await client.query(`
-        DELETE FROM ai_chat_history
+        DELETE FROM blackbox_chat_history
         WHERE last_updated < NOW() - INTERVAL '1 week';
       `);
 
