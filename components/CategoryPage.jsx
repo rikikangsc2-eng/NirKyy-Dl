@@ -1,10 +1,9 @@
 /*
 * Lokasi: components/CategoryPage.jsx
-* Versi: v6
+* Versi: v5
 */
 
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import { IconDownloader, IconConverter, IconSearch, IconGame, IconOther, IconAI } from './Icons.jsx';
 
 const categoryIcons = {
@@ -16,16 +15,11 @@ const categoryIcons = {
   'Other': <IconOther />,
 };
 
-export default function CategoryPage({ docs }) {
+export default function CategoryPage({ docs, onSelectEndpoint }) {
   const [openCategories, setOpenCategories] = useState({});
-  const router = useRouter();
 
   const toggleCategory = (category) => {
     setOpenCategories(prev => ({ ...prev, [category]: !prev[category] }));
-  };
-
-  const handleSelectEndpoint = (doc) => {
-    router.push(`/endpoint/${doc.id}`);
   };
 
   if (!docs) {
@@ -53,7 +47,7 @@ export default function CategoryPage({ docs }) {
               {docs[category].map((doc, docIndex) => (
                 <button
                   key={doc.id}
-                  onClick={() => handleSelectEndpoint(doc)}
+                  onClick={() => onSelectEndpoint(doc)}
                   className="category-item-button"
                   style={{ animationDelay: `${docIndex * 50}ms` }}
                 >

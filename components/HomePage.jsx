@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/HomePage.jsx
-* Versi: v6
+* Versi: v5
 */
 
 import MainContent from './MainContent';
@@ -39,7 +39,7 @@ export default function HomePage(props) {
       />
       {isResponseReady && (
         <button className="show-response-button" onClick={onShowResponse}>
-          View Response
+          Lihat Respon
         </button>
       )}
     </div>

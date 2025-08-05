@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/Layout.jsx
-* Versi: v10
+* Versi: v9
 */
 
 import Head from 'next/head';
@@ -13,6 +13,7 @@ export default function Layout(props) {
   const { 
     children, 
     activeTab, 
+    setActiveTab,
     isResponsePanelOpen,
     isPanelClosing,
     closeResponsePanel,
@@ -57,7 +58,7 @@ export default function Layout(props) {
             {children}
           </div>
         </main>
-        <BottomNavbar activeTab={activeTab} />
+        <BottomNavbar activeTab={activeTab} setActiveTab={setActiveTab} />
         {isResponsePanelOpen && (
           <DynamicResponsePanel 
             onClose={closeResponsePanel} 
