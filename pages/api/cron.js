@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/api/cron.js
-* Versi: v1
+* Versi: v2
 */
 
 import { Pool } from 'pg';
@@ -22,12 +22,18 @@ export default async function handler(req, res) {
         DELETE FROM website_counters
         WHERE last_updated < NOW() - INTERVAL '3 months';
       `);
-      res.status(200).send('ok');
+
+      await client.query(`
+        DELETE FROM ai_chat_history
+        WHERE last_updated < NOW() - INTERVAL '1 week';
+      `);
+
+      res.status(200).json({ status: 'ok', message: 'Cron job executed successfully.' });
     } finally {
       client.release();
     }
   } catch (error) {
     console.error('Cron job failed:', error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).json({ status: 'error', message: 'Internal Server Error' });
   }
 }

@@ -1,12 +1,13 @@
 /*
 * Lokasi: components/CategoryPage.jsx
-* Versi: v4
+* Versi: v5
 */
 
 import { useState } from 'react';
-import { IconDownloader, IconConverter, IconSearch, IconGame, IconOther } from './Icons.jsx';
+import { IconDownloader, IconConverter, IconSearch, IconGame, IconOther, IconAI } from './Icons.jsx';
 
 const categoryIcons = {
+  'AI': <IconAI />,
   'Downloader': <IconDownloader />,
   'Converter': <IconConverter />,
   'Search': <IconSearch />,
@@ -25,9 +26,14 @@ export default function CategoryPage({ docs, onSelectEndpoint }) {
     return <div className="loader"></div>;
   }
 
+  const sortedCategories = Object.keys(docs).sort((a, b) => {
+      const order = ['AI', 'Downloader', 'Converter', 'Search', 'Game & Fun', 'Other'];
+      return order.indexOf(a) - order.indexOf(b);
+  });
+
   return (
     <div className="category-page">
-      {Object.keys(docs).map((category, catIndex) => (
+      {sortedCategories.map((category, catIndex) => (
         <div key={category} className="category-group" style={{ animationDelay: `${catIndex * 100}ms` }}>
           <button onClick={() => toggleCategory(category)} className="category-header">
             <div className="category-title">
