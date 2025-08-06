@@ -1,7 +1,7 @@
 /*
-* Lokasi: pages/endpoint/[...id].js
-* Versi: v6
-*/
+ * Lokasi: pages/endpoint/[...id].js
+ * Versi: v8
+ */
 
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
@@ -9,14 +9,9 @@ import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import { getAllRoutes, getRouteById } from '../../utils/api-parser';
 import { useAppContext } from '../../context/AppContext';
+import HomePageSkeleton from '../../components/HomePageSkeleton';
 
-const PageLoader = () => (
-  <div className="page-loader-container">
-    <div className="loader"></div>
-  </div>
-);
-
-const DynamicHomePage = dynamic(() => import('../../components/HomePage'), { loading: PageLoader });
+const DynamicHomePage = dynamic(() => import('../../components/HomePage'));
 
 export default function EndpointPage({ endpoint }) {
   const router = useRouter();
@@ -36,7 +31,7 @@ export default function EndpointPage({ endpoint }) {
   }, [endpoint, setCurrentEndpoint]);
 
   if (router.isFallback) {
-    return <PageLoader />;
+    return <HomePageSkeleton />;
   }
 
   const seo = {

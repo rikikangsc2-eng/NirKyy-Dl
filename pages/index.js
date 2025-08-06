@@ -1,7 +1,7 @@
 /*
-* Lokasi: pages/index.js
-* Versi: v33
-*/
+ * Lokasi: pages/index.js
+ * Versi: v34
+ */
 
 import Head from 'next/head';
 import { useState, useEffect } from 'react';

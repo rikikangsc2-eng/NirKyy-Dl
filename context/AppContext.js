@@ -1,7 +1,7 @@
 /*
-* Lokasi: context/AppContext.js
-* Versi: v4
-*/
+ * Lokasi: context/AppContext.js
+ * Versi: v6
+ */
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -21,6 +21,8 @@ export function AppProvider({ children }) {
   const [error, setError] = useState(null);
   const [isResponsePanelOpen, setIsResponsePanelOpen] = useState(false);
   const [isPanelClosing, setIsPanelClosing] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(false);
+  const [navigatingTo, setNavigatingTo] = useState(null);
 
   const [docs, setDocs] = useState(null);
   const [isDocsLoading, setIsDocsLoading] = useState(true);
@@ -44,18 +46,31 @@ export function AppProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    const handleRouteChange = () => {
+    const handleRouteChangeStart = (url) => {
+      if (url !== router.asPath) {
+        setNavigatingTo(url);
+        setIsPageLoading(true);
+      }
       setApiResponse(null);
       setError(null);
       if (isResponsePanelOpen) {
         closeResponsePanel();
       }
     };
-    router.events.on('routeChangeStart', handleRouteChange);
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChange);
+    const handleRouteChangeComplete = () => {
+      setIsPageLoading(false);
+      setNavigatingTo(null);
     };
-  }, [isResponsePanelOpen, router.events]);
+
+    router.events.on('routeChangeStart', handleRouteChangeStart);
+    router.events.on('routeChangeComplete', handleRouteChangeComplete);
+    router.events.on('routeChangeError', handleRouteChangeComplete);
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart);
+      router.events.off('routeChangeComplete', handleRouteChangeComplete);
+      router.events.off('routeChangeError', handleRouteChangeComplete);
+    };
+  }, [isResponsePanelOpen, router.events, router.asPath]);
 
   useEffect(() => {
     if (currentEndpoint?.params) {
@@ -153,6 +168,7 @@ export function AppProvider({ children }) {
     handleParamChange, handleSelectEndpoint, handleExecute, closeResponsePanel, openResponsePanel,
     docs, isDocsLoading,
     statusData, isStatusLoading, statusError, fetchStatusData,
+    isPageLoading, navigatingTo,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

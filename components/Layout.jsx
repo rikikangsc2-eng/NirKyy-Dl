@@ -1,13 +1,17 @@
 /*
-* Lokasi: components/Layout.jsx
-* Versi: v11
-*/
-
+ * Lokasi: components/Layout.jsx
+ * Versi: v13
+ */
 
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import BottomNavbar from './BottomNavbar';
 import { useAppContext } from '../context/AppContext';
+import HomePageSkeleton from './HomePageSkeleton';
+import CategoryPageSkeleton from './CategoryPageSkeleton';
+import SearchPageSkeleton from './SearchPageSkeleton';
+import StatusPageSkeleton from './StatusPageSkeleton';
+import BlogPageSkeleton from './BlogPageSkeleton';
 
 const DynamicResponsePanel = dynamic(() => import('./ResponsePanel'));
 
@@ -21,7 +25,9 @@ export default function Layout({ children }) {
     error,
     isResponsePanelOpen,
     isPanelClosing,
-    closeResponsePanel
+    closeResponsePanel,
+    isPageLoading,
+    navigatingTo
   } = useAppContext();
 
   const getActiveTab = () => {
@@ -37,12 +43,25 @@ export default function Layout({ children }) {
 
   const activeTab = getActiveTab();
 
+  const getSkeletonForRoute = () => {
+    const path = navigatingTo || router.pathname;
+    if (path === '/') return <HomePageSkeleton isWelcome={true} />;
+    if (path.startsWith('/endpoint')) return <HomePageSkeleton />;
+    if (path.startsWith('/category')) return <CategoryPageSkeleton />;
+    if (path.startsWith('/search')) return <SearchPageSkeleton />;
+    if (path.startsWith('/status')) return <StatusPageSkeleton />;
+    if (path.startsWith('/blog')) return <BlogPageSkeleton />;
+    return <HomePageSkeleton isWelcome={true} />;
+  };
+
   return (
     <div className="app-shell">
       <main className="page-content">
-        <div key={router.pathname} className="page-content-wrapper">
-          {children}
-        </div>
+        {isPageLoading ? getSkeletonForRoute() : (
+          <div key={router.pathname} className="page-content-wrapper">
+            {children}
+          </div>
+        )}
       </main>
       <BottomNavbar activeTab={activeTab} />
       {isResponsePanelOpen && (

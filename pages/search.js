@@ -1,20 +1,15 @@
 /*
-* Lokasi: pages/search.js
-* Versi: v4
-*/
+ * Lokasi: pages/search.js
+ * Versi: v5
+ */
 
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { useAppContext } from '../context/AppContext';
 
-const PageLoader = () => (
-  <div className="page-loader-container">
-    <div className="loader"></div>
-  </div>
-);
-
-const DynamicSearchPage = dynamic(() => import('../components/SearchPage'), { loading: PageLoader });
+const DynamicSearchPage = dynamic(() => import('../components/SearchPage'));
+const DynamicSearchPageSkeleton = dynamic(() => import('../components/SearchPageSkeleton'));
 
 export default function Search() {
   const [baseUrl, setBaseUrl] = useState('');
@@ -51,7 +46,7 @@ export default function Search() {
         <meta property="og:image" content={seo.ogImageUrl} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
-      {isDocsLoading ? <PageLoader /> : <DynamicSearchPage docs={docs} />}
+      {isDocsLoading ? <DynamicSearchPageSkeleton /> : <DynamicSearchPage docs={docs} />}
     </>
   );
 }
