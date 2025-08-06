@@ -13,7 +13,7 @@ archive.on('error', err => { throw err; });
 
 archive.pipe(output);
 
-const EXCLUDES = ['zip.js','node_modules', 'package-lock.json', 'project.zip', 'input.txt','sw.js'];
+const EXCLUDES = ['zip.js','node_modules', 'package-lock.json', 'project.zip'];
 const isHidden = name => name.startsWith('.');
 
 // Fungsi rekursif untuk tambahkan file/folder

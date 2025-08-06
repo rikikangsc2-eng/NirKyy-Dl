@@ -1,13 +1,15 @@
 /*
- * Lokasi: components/StatusPage.jsx
- * Versi: v4
- */
-
-import StatusPageSkeleton from './StatusPageSkeleton';
+* Lokasi: components/StatusPage.jsx
+* Versi: v3
+*/
 
 export default function StatusPage({ data, isLoading, error }) {
   if (isLoading) {
-    return <StatusPageSkeleton />;
+    return (
+      <div className="page-loader-container">
+        <div className="loader"></div>
+      </div>
+    );
   }
 
   if (error) {

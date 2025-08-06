@@ -1,14 +1,20 @@
 /*
- * Lokasi: pages/blog.js
- * Versi: v5
- */
+* Lokasi: pages/blog.js
+* Versi: v3
+*/
 
 
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 
-const DynamicBlogPage = dynamic(() => import('../components/BlogPage'));
+const PageLoader = () => (
+  <div className="page-loader-container">
+    <div className="loader"></div>
+  </div>
+);
+
+const DynamicBlogPage = dynamic(() => import('../components/BlogPage'), { loading: PageLoader });
 
 export default function Blog() {
   const [baseUrl, setBaseUrl] = useState('');

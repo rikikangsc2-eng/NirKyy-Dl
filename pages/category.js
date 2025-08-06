@@ -1,15 +1,20 @@
 /*
- * Lokasi: pages/category.js
- * Versi: v5
- */
+* Lokasi: pages/category.js
+* Versi: v4
+*/
 
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { useAppContext } from '../context/AppContext';
 
-const DynamicCategoryPage = dynamic(() => import('../components/CategoryPage'));
-const DynamicCategoryPageSkeleton = dynamic(() => import('../components/CategoryPageSkeleton'));
+const PageLoader = () => (
+  <div className="page-loader-container">
+    <div className="loader"></div>
+  </div>
+);
+
+const DynamicCategoryPage = dynamic(() => import('../components/CategoryPage'), { loading: PageLoader });
 
 export default function Category() {
   const [baseUrl, setBaseUrl] = useState('');
@@ -46,7 +51,7 @@ export default function Category() {
         <meta property="og:image" content={seo.ogImageUrl} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
-      {isDocsLoading ? <DynamicCategoryPageSkeleton /> : <DynamicCategoryPage docs={docs} />}
+      {isDocsLoading ? <PageLoader /> : <DynamicCategoryPage docs={docs} />}
     </>
   );
 }
