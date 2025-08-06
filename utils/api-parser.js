@@ -1,6 +1,6 @@
 /*
 * Lokasi: utils/api-parser.js
-* Versi: v8
+* Versi: v9
 */
 
 import fs from 'fs';
@@ -8,6 +8,7 @@ import path from 'path';
 import { glob } from 'glob';
 
 const apiDir = path.join(process.cwd(), 'pages', 'api');
+let allRoutesCache = null;
 
 function parseRouteFile(filePath) {
   try {
@@ -41,6 +42,10 @@ function parseRouteFile(filePath) {
 }
 
 export function getAllRoutes() {
+  if (allRoutesCache) {
+    return allRoutesCache;
+  }
+
   const filePaths = glob.sync('**/*.js', { cwd: apiDir });
 
   const allDocs = filePaths
@@ -57,13 +62,18 @@ export function getAllRoutes() {
     }
     grouped[category].push(doc);
   }
+
+  allRoutesCache = grouped;
   return grouped;
 }
 
 export function getRouteById(id) {
-  const fullPath = path.join(apiDir, `${id}.js`);
-  if (!fs.existsSync(fullPath)) {
-    return null;
+  const allDocs = getAllRoutes();
+  for (const category in allDocs) {
+    const found = allDocs[category].find(doc => doc.id === id);
+    if (found) {
+      return found;
+    }
   }
-  return parseRouteFile(fullPath);
+  return null;
 }
