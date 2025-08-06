@@ -1,14 +1,15 @@
 /*
 * Lokasi: styles/globals.css
-* Versi: v26
+* Versi: v27
 */
+
 
 :root {
   --bg-color: #0d1117;
   --primary-bg: #161b22;
   --secondary-bg: #010409;
   --text-color: #e6edf3;
-  --text-muted: #8b949e;
+  --text-muted: #a0a0a0;
   --primary-color: #8A2BE2; /* BlueViolet */
   --primary-hover: #7b1fa2;
   --accent-color: #F9A825; /* Vibrant Yellow/Orange */

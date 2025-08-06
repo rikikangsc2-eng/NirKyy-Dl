@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/endpoint/[...id].js
-* Versi: v3
+* Versi: v4
 */
 
 
@@ -68,7 +68,7 @@ export default function EndpointPage({ endpoint }) {
         <meta name="twitter:title" content={seo.pageTitle} />
         <meta name="twitter:description" content={seo.pageDescription} />
         <meta name="twitter:image" content={seo.ogImageUrl} />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <DynamicHomePage />
     </>

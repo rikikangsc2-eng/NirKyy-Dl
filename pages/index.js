@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v31
+* Versi: v32
 */
 
 
@@ -55,7 +55,7 @@ export default function IndexPage() {
         <meta name="twitter:title" content={seo.pageTitle} />
         <meta name="twitter:description" content={seo.pageDescription} />
         <meta name="twitter:image" content={seo.ogImageUrl} />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <DynamicHomePage />
     </>

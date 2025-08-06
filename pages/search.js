@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/search.js
-* Versi: v2
+* Versi: v3
 */
 
 
@@ -49,7 +49,7 @@ export default function Search({ docs }) {
         <meta property="og:type" content="website" />
         <meta property="og:url" content={seo.canonicalUrl} />
         <meta property="og:image" content={seo.ogImageUrl} />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <DynamicSearchPage docs={docs} />
     </>
