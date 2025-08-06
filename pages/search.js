@@ -1,13 +1,12 @@
 /*
 * Lokasi: pages/search.js
-* Versi: v3
+* Versi: v4
 */
-
 
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
-import { getAllRoutes } from '../utils/api-parser';
+import { useAppContext } from '../context/AppContext';
 
 const PageLoader = () => (
   <div className="page-loader-container">
@@ -17,8 +16,9 @@ const PageLoader = () => (
 
 const DynamicSearchPage = dynamic(() => import('../components/SearchPage'), { loading: PageLoader });
 
-export default function Search({ docs }) {
+export default function Search() {
   const [baseUrl, setBaseUrl] = useState('');
+  const { docs, isDocsLoading } = useAppContext();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -51,16 +51,7 @@ export default function Search({ docs }) {
         <meta property="og:image" content={seo.ogImageUrl} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
-      <DynamicSearchPage docs={docs} />
+      {isDocsLoading ? <PageLoader /> : <DynamicSearchPage docs={docs} />}
     </>
   );
-}
-
-export async function getStaticProps() {
-  const docs = getAllRoutes();
-  return {
-    props: {
-      docs,
-    },
-  };
 }

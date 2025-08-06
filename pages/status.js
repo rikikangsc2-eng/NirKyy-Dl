@@ -1,12 +1,12 @@
 /*
 * Lokasi: pages/status.js
-* Versi: v3
+* Versi: v4
 */
-
 
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
+import { useAppContext } from '../context/AppContext';
 
 const PageLoader = () => (
   <div className="page-loader-container">
@@ -18,9 +18,7 @@ const DynamicStatusPage = dynamic(() => import('../components/StatusPage'), { lo
 
 export default function Status() {
   const [baseUrl, setBaseUrl] = useState('');
-  const [statusData, setStatusData] = useState(null);
-  const [isStatusLoading, setIsStatusLoading] = useState(true);
-  const [statusError, setStatusError] = useState(null);
+  const { statusData, isStatusLoading, statusError, fetchStatusData } = useAppContext();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -29,22 +27,8 @@ export default function Status() {
   }, []);
 
   useEffect(() => {
-    const fetchStatusData = async () => {
-      setIsStatusLoading(true);
-      setStatusError(null);
-      try {
-        const response = await fetch('/api/uptime-status');
-        if (!response.ok) throw new Error('Failed to fetch status data');
-        const result = await response.json();
-        setStatusData(result.data);
-      } catch (err) {
-        setStatusError(err.message);
-      } finally {
-        setIsStatusLoading(false);
-      }
-    };
     fetchStatusData();
-  }, []);
+  }, [fetchStatusData]);
 
   const seo = {
     pageTitle: 'API Status - NirKyy API Docs',
