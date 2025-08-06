@@ -1,8 +1,7 @@
 /*
 * Lokasi: pages/endpoint/[...id].js
-* Versi: v4
+* Versi: v5
 */
-
 
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
@@ -83,7 +82,7 @@ export async function getStaticPaths() {
       paths.push({ params: { id: doc.id.split('/') } });
     });
   });
-  return { paths, fallback: true };
+  return { paths, fallback: false };
 }
 
 export async function getStaticProps({ params }) {
