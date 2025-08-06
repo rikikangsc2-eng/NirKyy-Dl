@@ -130,3 +130,5 @@ dist
 .pnp.*
 
 project.zip
+sw.js
+input.txt
