@@ -1,6 +1,6 @@
 /*
 * Lokasi: styles/globals.css
-* Versi: v28
+* Versi: v29
 */
 
 :root {
@@ -8,7 +8,7 @@
   --primary-bg: #161b22;
   --secondary-bg: #010409;
   --text-color: #e6edf3;
-  --text-muted: #a0a0a0;
+  --text-muted: #b1bac4;
   --primary-color: #a855f7;
   --primary-hover: #9333ea;
   --accent-color: #F9A825;
