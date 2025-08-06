@@ -1,0 +1,148 @@
+{
+  "AI": [
+    {
+      "id": "ai/chatbot",
+      "name": "AI Chatbot (Blackbox)",
+      "category": "AI",
+      "method": "GET, POST",
+      "path": "/ai/chatbot",
+      "description": "Berinteraksi dengan model AI Blackbox. Mendukung pencarian web dan menyimpan riwayat percakapan.",
+      "params": [
+        {
+          "name": "user",
+          "type": "text",
+          "optional": false,
+          "example": "user_12345"
+        },
+        {
+          "name": "prompt",
+          "type": "text",
+          "optional": false,
+          "example": "Siapa penemu bohlam lampu?"
+        },
+        {
+          "name": "system",
+          "type": "text",
+          "optional": true,
+          "example": "You are a helpful assistant."
+        },
+        {
+          "name": "web",
+          "type": "text",
+          "optional": true,
+          "example": "false"
+        },
+        {
+          "name": "cleardb",
+          "type": "text",
+          "optional": true,
+          "example": "false"
+        }
+      ]
+    }
+  ],
+  "Other": [
+    {
+      "id": "other/counter",
+      "name": "API Counter",
+      "category": "Other",
+      "method": "GET",
+      "path": "/other/counter",
+      "description": "Tracks and displays visit counts for a website. Use write=true to increment the counter.",
+      "params": [
+        {
+          "name": "website",
+          "type": "text",
+          "optional": false,
+          "example": "example.com"
+        },
+        {
+          "name": "write",
+          "type": "text",
+          "optional": true,
+          "example": "true"
+        }
+      ]
+    }
+  ],
+  "Converter": [
+    {
+      "id": "converter/remove-background",
+      "name": "Background Remover",
+      "category": "Converter",
+      "method": "POST",
+      "path": "/converter/remove-background",
+      "description": "Menghapus latar belakang dari gambar via URL atau upload file menggunakan MagicStudio API.",
+      "params": [
+        {
+          "name": "url",
+          "type": "text",
+          "optional": true,
+          "example": null
+        },
+        {
+          "name": "file",
+          "type": "file",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "id": "converter/postimage-upload",
+      "name": "Postimages Uploader",
+      "category": "Converter",
+      "method": "POST",
+      "path": "/converter/postimage-upload",
+      "description": "Uploads an image from a URL or a direct file to Postimages.org.",
+      "params": [
+        {
+          "name": "url",
+          "type": "text",
+          "optional": true,
+          "example": null
+        },
+        {
+          "name": "file",
+          "type": "file",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "Downloader": [
+    {
+      "id": "downloader/instagram-reels",
+      "name": "Instagram Reels",
+      "category": "Downloader",
+      "method": "GET, POST",
+      "path": "/downloader/instagram-reels",
+      "description": "Mengunduh konten Instagram (Reels)",
+      "params": [
+        {
+          "name": "url",
+          "type": "text",
+          "optional": false,
+          "example": "https://www.instagram.com/reel/DAIXhDJM7ms/"
+        }
+      ]
+    }
+  ],
+  "Search": [
+    {
+      "id": "search/lyrics",
+      "name": "Lyrics Finder",
+      "category": "Search",
+      "method": "GET",
+      "path": "/search/lyrics",
+      "description": "Mencari lirik lagu berdasarkan judul atau artis dari lyrics.com.",
+      "params": [
+        {
+          "name": "q",
+          "type": "text",
+          "optional": false,
+          "example": "never gonna give you up"
+        }
+      ]
+    }
+  ]
+}

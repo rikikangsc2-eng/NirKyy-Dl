@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/endpoint/[...id].js
-* Versi: v5
+* Versi: v6
 */
 
 import { useEffect, useState } from 'react';
@@ -35,7 +35,7 @@ export default function EndpointPage({ endpoint }) {
     }
   }, [endpoint, setCurrentEndpoint]);
 
-  if (router.isFallback || !endpoint) {
+  if (router.isFallback) {
     return <PageLoader />;
   }
 
@@ -82,7 +82,7 @@ export async function getStaticPaths() {
       paths.push({ params: { id: doc.id.split('/') } });
     });
   });
-  return { paths, fallback: false };
+  return { paths, fallback: 'blocking' };
 }
 
 export async function getStaticProps({ params }) {
