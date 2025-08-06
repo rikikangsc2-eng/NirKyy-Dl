@@ -1,6 +1,6 @@
 /*
 * Lokasi: styles/globals.css
-* Versi: v29
+* Versi: v30
 */
 
 :root {
@@ -8,13 +8,13 @@
   --primary-bg: #161b22;
   --secondary-bg: #010409;
   --text-color: #e6edf3;
-  --text-muted: #b1bac4;
-  --primary-color: #a855f7;
-  --primary-hover: #9333ea;
+  --text-muted: #c9d1d9;
+  --primary-color: #c084fc;
+  --primary-hover: #a855f7;
   --accent-color: #F9A825;
   --border-color: #30363d;
   --hover-bg: #1f242c;
-  --active-bg: rgba(168, 85, 247, 0.15);
+  --active-bg: rgba(192, 132, 252, 0.15);
   --active-text: #f0f6fc;
   --get-color: #238636;
   --post-color: #1f6feb;
@@ -76,7 +76,7 @@ h1 svg { color: var(--primary-color); }
 .input-group label { margin-bottom: 0.5rem; font-weight: 500; color: var(--text-color); display: flex; align-items: center; gap: 8px;}
 .optional-badge { display: inline-block; background-color: var(--border-color); color: var(--text-muted); padding: 2px 6px; font-size: 0.7rem; border-radius: 4px; font-weight: 500; text-transform: uppercase; }
 .input-group input { background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px; border-radius: 6px; font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s; }
-.input-group input:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.3); }
+.input-group input:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.3); }
 .file-input { padding: 5px; }
 .file-input::file-selector-button { background-color: var(--primary-color); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 10px; transition: background-color 0.2s; }
 .file-input::file-selector-button:hover { background-color: var(--primary-hover); }
