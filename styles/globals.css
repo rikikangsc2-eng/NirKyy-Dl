@@ -1,6 +1,6 @@
 /*
 * Lokasi: styles/globals.css
-* Versi: v30
+* Versi: v31
 */
 
 :root {
@@ -24,13 +24,14 @@
   --success-color: #28a745;
   --navbar-height: 60px;
   --animation-duration: 0.3s;
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  --font-mono: var(--font-fira-code), 'Courier New', monospace;
 }
 
 html, body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: var(--font-sans);
   background-color: var(--bg-color);
   color: var(--text-color);
   overflow: hidden;
@@ -64,7 +65,7 @@ h1 svg { color: var(--primary-color); }
 .method-put { background-color: var(--put-color); }
 .method-delete { background-color: var(--delete-color); }
 .method-other { background-color: var(--text-muted); }
-.path-text { font-family: 'Fira Code', 'Courier New', monospace; font-size: 1rem; color: var(--text-color); word-break: break-all; }
+.path-text { font-family: var(--font-mono); font-size: 1rem; color: var(--text-color); word-break: break-all; }
 .section-title { font-size: 1.5rem; border-bottom: 1px solid var(--accent-color); padding-bottom: 0.5rem; margin: 2rem 0 1.5rem; display: flex; align-items: center; gap: 10px; color: var(--active-text); }
 .section-title svg { color: var(--accent-color); }
 
@@ -102,7 +103,7 @@ h1 svg { color: var(--primary-color); }
 .tab-button.active { color: var(--text-color); border-bottom-color: var(--primary-color); }
 .response-container { flex-grow: 1; display: flex; flex-direction: column; background-color: var(--primary-bg); overflow-y: auto; padding: 1.5rem; }
 .response-container .code-block { flex-grow: 1; margin: 0; }
-.response-container .code-block > pre { height: 100%; border-radius: 8px !important; background: var(--primary-bg) !important; }
+.response-container .code-block > pre { height: 100%; border-radius: 8px !important; background: var(--primary-bg) !important; font-family: var(--font-mono) !important; }
 .response-loader-container { display: flex; justify-content: center; align-items: center; flex-grow: 1; min-height: 200px; }
 .loader { border: 4px solid var(--border-color); border-top: 4px solid var(--primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: auto; }
 .error-message { color: var(--error-color); background-color: rgba(248, 81, 73, 0.1); border: 1px solid var(--error-color); padding: 1rem; border-radius: 8px; text-align: center; }
@@ -178,7 +179,7 @@ h1 svg { color: var(--primary-color); }
 .blog-section h2 { font-size: 1.75rem; color: var(--accent-color); margin-top: 0; margin-bottom: 1rem; }
 .blog-section p { color: var(--text-color); line-height: 1.6; }
 .blog-section ul { list-style-type: none; padding-left: 0; margin-top: 1rem; }
-.blog-section li { background-color: var(--bg-color); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 0.5rem; font-family: 'Fira Code', 'Courier New', monospace; }
+.blog-section li { background-color: var(--bg-color); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 0.5rem; font-family: var(--font-mono); }
 .github-link { display: inline-block; margin-top: 1rem; color: var(--primary-color); font-weight: 500; text-decoration: underline; }
 .blog-footer { margin-top: 4rem; padding: 2rem; color: var(--text-muted); font-size: 0.9rem; text-align: center; }
 

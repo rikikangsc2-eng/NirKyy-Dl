@@ -1,22 +1,11 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v32
+* Versi: v33
 */
-
 
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import HomePage from '../components/HomePage';
-
-const PageLoader = () => (
-  <div className="page-loader-container">
-    <div className="loader"></div>
-  </div>
-);
-
-const DynamicHomePage = dynamic(() => import('../components/HomePage'), { loading: PageLoader });
-
 
 export default function IndexPage() {
   const [baseUrl, setBaseUrl] = useState('');
@@ -57,7 +46,7 @@ export default function IndexPage() {
         <meta name="twitter:image" content={seo.ogImageUrl} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
-      <DynamicHomePage />
+      <HomePage />
     </>
   );
 }
