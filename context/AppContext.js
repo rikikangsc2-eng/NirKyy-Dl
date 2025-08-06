@@ -1,8 +1,7 @@
 /*
 * Lokasi: context/AppContext.js
-* Versi: v1
+* Versi: v2
 */
-
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -24,24 +23,24 @@ export function AppProvider({ children }) {
   const [isPanelClosing, setIsPanelClosing] = useState(false);
 
   useEffect(() => {
-    const handleRouteChange = () => {
+    const handleRouteChange = (url) => {
       setApiResponse(null);
       setError(null);
       if (isResponsePanelOpen) {
         closeResponsePanel();
       }
-      if (!router.asPath.startsWith('/endpoint/')) {
+      if (!url.startsWith('/endpoint/')) {
         setCurrentEndpoint(null);
         setParamValues({});
       }
     };
 
-    router.events.on('routeChangeStart', handleRouteChange);
+    router.events.on('routeChangeComplete', handleRouteChange);
 
     return () => {
-      router.events.off('routeChangeStart', handleRouteChange);
+      router.events.off('routeChangeComplete', handleRouteChange);
     };
-  }, [router.asPath, isResponsePanelOpen]);
+  }, [isResponsePanelOpen]);
 
   useEffect(() => {
     if (currentEndpoint?.params) {
