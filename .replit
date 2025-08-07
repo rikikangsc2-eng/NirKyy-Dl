@@ -32,4 +32,4 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "node zip.js & npm i && npm run dev"
+args = "node sw.js && > input.txt && node zip.js & npm i && npm run dev"

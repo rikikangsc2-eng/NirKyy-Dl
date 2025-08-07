@@ -113,17 +113,66 @@ const handler = async (req, res) => {
       id: newUserMessage.id,
       userSystemPrompt: system || 'You are a helpful assistant.',
       validated: VALIDATED_TOKEN,
-      previewToken: null, userId: null, codeModelMode: true, trendingAgentMode: {}, isMicMode: false, maxTokens: 1024,
-      playgroundTopP: null, playgroundTemperature: null, isChromeExt: false, githubToken: "", clickedAnswer2: false,
-      clickedAnswer3: false, clickedForceWebSearch: false, visitFromDelta: false, isMemoryEnabled: false, mobileClient: false,
-      userSelectedModel: null, userSelectedAgent: "VscodeAgent", imageGenerationMode: false, imageGenMode: "autoMode",
-      webSearchModePrompt: false, deepSearchMode: false, domains: null, vscodeClient: false, codeInterpreterMode: false,
-      customProfile: { name: "", occupation: "", traits: [], additionalInfo: "", enableNewChats: false },
-      webSearchModeOption, session: null, isPremium: false, subscriptionCache: null, beastMode: false,
-      reasoningMode: false, designerMode: false, workspaceId: "", asyncMode: false, integrations: {},
-      isTaskPersistent: false, selectedElement: null
+      previewToken: null,
+      userId: null,
+      codeModelMode: true,
+      trendingAgentMode: {},
+      isMicMode: false,
+      maxTokens: 1024,
+      playgroundTopP: null,
+      playgroundTemperature: null,
+      isChromeExt: false,
+      githubToken: "",
+      clickedAnswer2: false,
+      clickedAnswer3: false,
+      clickedForceWebSearch: false,
+      visitFromDelta: false,
+      isMemoryEnabled: false,
+      mobileClient: false,
+      userSelectedModel: null,
+      userSelectedAgent: "VscodeAgent",
+      imageGenerationMode: false,
+      imageGenMode: "autoMode",
+      webSearchModePrompt: false,
+      deepSearchMode: false,
+      domains: null,
+      vscodeClient: false,
+      codeInterpreterMode: false,
+      customProfile: {
+        name: "",
+        occupation: "",
+        traits: [],
+        additionalInfo: "",
+        enableNewChats: false
+      },
+      webSearchModeOption,
+      session: {
+        user: {
+          name: "Riki PurPur",
+          email: "rikipurpur98@gmail.com",
+          image: "https://lh3.googleusercontent.com/a/ACg8ocKHaWelcSDldvbm6wh0CegljUr_Iyv8NYNFVlaCb0qk_LrecA4=s96-c",
+          id: "105532451547066425912"
+        },
+        expires: "2025-09-06T22:39:19.283Z",
+        isNewUser: false
+      },
+      isPremium: false,
+      subscriptionCache: {
+        status: "FREE",
+        expiryTimestamp: null,
+        lastChecked: Date.now(),
+        isTrialSubscription: false
+      },
+      beastMode: false,
+      reasoningMode: false,
+      designerMode: false,
+      workspaceId: "",
+      asyncMode: false,
+      integrations: {},
+      isTaskPersistent: false,
+      selectedElement: null
     };
-
+    
     const chatApiUrl = 'https://www.blackbox.ai/api/chat';
     const headers = {
       'Accept': '*/*', 'Content-Type': 'application/json', 'Origin': 'https://www.blackbox.ai',
