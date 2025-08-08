@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/search.js
-* Versi: v4
+* Versi: v5
 */
 
 import { useState, useEffect } from 'react';

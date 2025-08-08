@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/category.js
-* Versi: v4
+* Versi: v5
 */
 
 import { useState, useEffect } from 'react';

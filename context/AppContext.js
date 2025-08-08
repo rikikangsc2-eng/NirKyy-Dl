@@ -1,9 +1,9 @@
 /*
 * Lokasi: context/AppContext.js
-* Versi: v4
+* Versi: v5
 */
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 
 const AppContext = createContext();
@@ -14,14 +14,13 @@ export function useAppContext() {
 
 export function AppProvider({ children }) {
   const router = useRouter();
-  const [currentEndpoint, setCurrentEndpoint] = useState(null);
+  const [activeEndpointId, setActiveEndpointId] = useState(null);
   const [paramValues, setParamValues] = useState({});
   const [apiResponse, setApiResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isResponsePanelOpen, setIsResponsePanelOpen] = useState(false);
   const [isPanelClosing, setIsPanelClosing] = useState(false);
-
   const [docs, setDocs] = useState(null);
   const [isDocsLoading, setIsDocsLoading] = useState(true);
   const [statusData, setStatusData] = useState(null);
@@ -43,24 +42,34 @@ export function AppProvider({ children }) {
     fetchAllDocs();
   }, []);
 
-  useEffect(() => {
-    const handleRouteChange = () => {
-      setApiResponse(null);
-      setError(null);
-      if (isResponsePanelOpen) {
-        closeResponsePanel();
-      }
-    };
-    router.events.on('routeChangeStart', handleRouteChange);
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChange);
-    };
-  }, [isResponsePanelOpen, router.events]);
+  const getEndpointById = useCallback((id) => {
+    if (!docs || !id) return null;
+    for (const category of Object.values(docs)) {
+        const endpoint = category.find(doc => doc.id === id);
+        if (endpoint) return endpoint;
+    }
+    return null;
+  }, [docs]);
 
   useEffect(() => {
-    if (currentEndpoint?.params) {
+    const { open } = router.query;
+    if (open && typeof open === 'string' && docs) {
+      const endpoint = getEndpointById(open);
+      if (endpoint) {
+        setActiveEndpointId(open);
+        const element = document.getElementById(`endpoint-${open.replace(/\//g, '-')}`);
+        if(element) {
+          setTimeout(() => element.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        }
+      }
+    }
+  }, [router.query, docs, getEndpointById]);
+
+  useEffect(() => {
+    const endpoint = getEndpointById(activeEndpointId);
+    if (endpoint?.params) {
       const initialParams = {};
-      currentEndpoint.params.forEach(p => {
+      endpoint.params.forEach(p => {
         if (p.type !== 'file') {
           initialParams[p.name] = p.example || '';
         }
@@ -69,45 +78,28 @@ export function AppProvider({ children }) {
     } else {
       setParamValues({});
     }
-  }, [currentEndpoint]);
+    setApiResponse(null);
+    setError(null);
+  }, [activeEndpointId, getEndpointById]);
 
-  const fetchStatusData = async () => {
-    if (statusData) return;
-    setIsStatusLoading(true);
-    setStatusError(null);
-    try {
-      const response = await fetch('/api/uptime-status');
-      if (!response.ok) throw new Error('Failed to fetch status data');
-      const result = await response.json();
-      setStatusData(result.data);
-    } catch (err) {
-      setStatusError(err.message);
-    } finally {
-      setIsStatusLoading(false);
-    }
-  };
-
-  const handleParamChange = (param, value) => {
-    setParamValues(prev => ({ ...prev, [param]: value }));
-  };
-
-  const handleSelectEndpoint = (doc) => {
-    setCurrentEndpoint(doc);
-    router.push(`/endpoint/${doc.id}`);
+  const handleSelectEndpoint = (id) => {
+    router.push(`/?open=${encodeURIComponent(id)}`, undefined, { shallow: true });
+    setActiveEndpointId(id);
   };
 
   const handleExecute = async () => {
-    if (!currentEndpoint) return;
+    const endpoint = getEndpointById(activeEndpointId);
+    if (!endpoint) return;
     setIsLoading(true);
     setError(null);
     setApiResponse(null);
     setIsResponsePanelOpen(true);
     try {
-      let url = `/api${currentEndpoint.path}`;
-      const rawMethod = currentEndpoint.method || 'GET';
+      let url = `/api${endpoint.path}`;
+      const rawMethod = endpoint.method || 'GET';
       const actualMethod = rawMethod.split(',')[0].trim().toUpperCase();
       const options = { method: actualMethod };
-      const hasFile = currentEndpoint.params.some(p => p.type === 'file' && paramValues[p.name]);
+      const hasFile = endpoint.params.some(p => p.type === 'file' && paramValues[p.name]);
       if (hasFile) {
         const formData = new FormData();
         Object.entries(paramValues).forEach(([key, value]) => {
@@ -143,16 +135,35 @@ export function AppProvider({ children }) {
     }, 300);
   };
 
-  const openResponsePanel = () => {
-    setIsResponsePanelOpen(true);
+  const openResponsePanel = () => setIsResponsePanelOpen(true);
+  const fetchStatusData = useCallback(async () => {
+    if (statusData) return;
+    setIsStatusLoading(true);
+    setStatusError(null);
+    try {
+      const response = await fetch('/api/uptime-status');
+      if (!response.ok) throw new Error('Failed to fetch status data');
+      const result = await response.json();
+      setStatusData(result.data);
+    } catch (err) {
+      setStatusError(err.message);
+    } finally {
+      setIsStatusLoading(false);
+    }
+  }, [statusData]);
+
+  const handleParamChange = (param, value) => {
+    setParamValues(prev => ({ ...prev, [param]: value }));
   };
 
   const value = {
-    currentEndpoint, setCurrentEndpoint, paramValues, setParamValues,
-    apiResponse, isLoading, error, isResponsePanelOpen, isPanelClosing,
-    handleParamChange, handleSelectEndpoint, handleExecute, closeResponsePanel, openResponsePanel,
     docs, isDocsLoading,
+    activeEndpointId, setActiveEndpointId,
+    paramValues, handleParamChange,
+    apiResponse, isLoading, error, isResponsePanelOpen, isPanelClosing,
+    handleSelectEndpoint, handleExecute, closeResponsePanel, openResponsePanel,
     statusData, isStatusLoading, statusError, fetchStatusData,
+    getEndpointById
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

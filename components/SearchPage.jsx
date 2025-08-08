@@ -1,11 +1,15 @@
 /*
 * Lokasi: components/SearchPage.jsx
-* Versi: v6
+* Versi: v8
 */
-
 
 import { useState, useMemo } from 'react';
 import { useAppContext } from '../context/AppContext';
+
+const getCategoryClass = (category) => {
+  if (!category) return 'category-other';
+  return `category-${category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`;
+};
 
 export default function SearchPage({ docs }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -53,11 +57,11 @@ export default function SearchPage({ docs }) {
         {filteredDocs.map((doc, index) => (
           <button
             key={doc.id}
-            className="search-result-item"
-            onClick={() => handleSelectEndpoint(doc)}
+            className={`search-result-item ${getCategoryClass(doc.category)}`}
+            onClick={() => handleSelectEndpoint(doc.id)}
             style={{ animationDelay: `${index * 75}ms` }}
           >
-            <span className="result-category">{doc.category}</span>
+            <span className="result-category" style={{ color: `var(--${getCategoryClass(doc.category)}-border)`}}>{doc.category}</span>
             <span className="result-name">{doc.name}</span>
           </button>
         ))}

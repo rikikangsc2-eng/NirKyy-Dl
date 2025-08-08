@@ -1,8 +1,7 @@
 /*
 * Lokasi: components/CategoryPage.jsx
-* Versi: v7
+* Versi: v9
 */
-
 
 import { useState } from 'react';
 import { IconDownloader, IconConverter, IconSearch, IconGame, IconOther, IconAI } from './Icons.jsx';
@@ -15,6 +14,10 @@ const categoryIcons = {
   'Search': <IconSearch />,
   'Game & Fun': <IconGame />,
   'Other': <IconOther />,
+};
+
+const getCategoryClass = (category) => {
+  return `category-${category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`;
 };
 
 export default function CategoryPage({ docs }) {
@@ -37,7 +40,7 @@ export default function CategoryPage({ docs }) {
   return (
     <div className="category-page">
       {sortedCategories.map((category, catIndex) => (
-        <div key={category} className="category-group" style={{ animationDelay: `${catIndex * 100}ms` }}>
+        <div key={category} className={`category-group ${getCategoryClass(category)}`} style={{ animationDelay: `${catIndex * 100}ms` }}>
           <button onClick={() => toggleCategory(category)} className="category-header">
             <div className="category-title">
               {categoryIcons[category] || null}
@@ -50,7 +53,7 @@ export default function CategoryPage({ docs }) {
               {docs[category].map((doc, docIndex) => (
                 <button
                   key={doc.id}
-                  onClick={() => handleSelectEndpoint(doc)}
+                  onClick={() => handleSelectEndpoint(doc.id)}
                   className="category-item-button"
                   style={{ animationDelay: `${docIndex * 50}ms` }}
                 >

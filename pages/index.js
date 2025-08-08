@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/index.js
-* Versi: v33
+* Versi: v34
 */
 
 import Head from 'next/head';
