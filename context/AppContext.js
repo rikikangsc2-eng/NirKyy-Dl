@@ -1,9 +1,9 @@
 /*
 * Lokasi: context/AppContext.js
-* Versi: v5
+* Versi: v6
 */
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
 
 const AppContext = createContext();
@@ -50,6 +50,8 @@ export function AppProvider({ children }) {
     }
     return null;
   }, [docs]);
+
+  const currentEndpoint = useMemo(() => getEndpointById(activeEndpointId), [activeEndpointId, getEndpointById]);
 
   useEffect(() => {
     const { open } = router.query;
@@ -159,6 +161,7 @@ export function AppProvider({ children }) {
   const value = {
     docs, isDocsLoading,
     activeEndpointId, setActiveEndpointId,
+    currentEndpoint,
     paramValues, handleParamChange,
     apiResponse, isLoading, error, isResponsePanelOpen, isPanelClosing,
     handleSelectEndpoint, handleExecute, closeResponsePanel, openResponsePanel,

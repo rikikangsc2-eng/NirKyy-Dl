@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/ResponsePanel.jsx
-* Versi: v10
+* Versi: v11
 */
 
 import { useState, useEffect } from 'react';
@@ -23,44 +23,54 @@ export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLo
   }, []);
 
   useEffect(() => {
-    if (endpoint && baseUrl) {
-      const generateCurlCommand = () => {
-        const method = (endpoint.method || 'GET').split(',')[0].trim().toUpperCase();
-        const apiUrl = `${baseUrl}/api${endpoint.path}`;
-        const hasFile = endpoint.params.some(p => p.type === 'file');
-
-        if (method === 'GET' && !hasFile) {
-          const cleanParams = Object.fromEntries(Object.entries(paramValues).filter(([_, v]) => v !== null && v !== undefined && v !== ''));
-          const queryParams = new URLSearchParams(cleanParams).toString();
-          let command = `curl '${apiUrl}${queryParams ? `?${queryParams}` : ''}' \\\n`;
-          command += `  -H 'User-Agent: Mozilla/5.0' \\\n`;
-          command += `  -H 'Referer: ${baseUrl}/' \\\n`;
-          command += `  --compressed`;
-          setCurlCommand(command);
-          return;
-        }
-
-        let command = `curl --location --request ${method} '${apiUrl}'`;
-
-        if (hasFile) {
-           Object.entries(paramValues).forEach(([key, value]) => {
-            const paramInfo = endpoint.params.find(p => p.name === key);
-            if (paramInfo && value) {
-               if (paramInfo.type === 'file') {
-                 command += ` \\\n  --form '${key}=@"/path/to/your/file.jpg"'`;
-               } else {
-                 command += ` \\\n  --form '${key}="${value}"'`;
-               }
-            }
-          });
-        } else {
-          command += ` \\\n  --header 'Content-Type: application/json'`;
-          command += ` \\\n  --data-raw '${JSON.stringify(paramValues, null, 2)}'`;
-        }
-        setCurlCommand(command);
-      };
-      generateCurlCommand();
+    if (!endpoint || !baseUrl) {
+      setCurlCommand('Select an endpoint to see the cURL command.');
+      return;
     }
+
+    const generateCurlCommand = () => {
+      const method = (endpoint.method || 'GET').split(',')[0].trim().toUpperCase();
+      const apiUrl = `${baseUrl}/api${endpoint.path}`;
+
+      if (method === 'GET') {
+        const cleanParams = Object.fromEntries(
+          Object.entries(paramValues).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+        );
+        const queryParams = new URLSearchParams(cleanParams).toString();
+        let command = `curl -X GET '${apiUrl}${queryParams ? `?${queryParams}` : ''}' \\\n`;
+        command += `  -H 'User-Agent: Mozilla/5.0'`;
+        setCurlCommand(command);
+        return;
+      }
+
+      const hasUploadedFile = endpoint.params.some(p => p.type === 'file' && paramValues[p.name]);
+      let command = `curl --location --request ${method} '${apiUrl}'`;
+
+      if (hasUploadedFile) {
+        Object.entries(paramValues).forEach(([key, value]) => {
+          const paramInfo = endpoint.params.find(p => p.name === key);
+          if (paramInfo && (value || paramInfo.type === 'file')) {
+            if (paramInfo.type === 'file') {
+              const fileName = value ? value.name : 'your-file.jpg';
+              command += ` \\\n  --form '${key}=@"/path/to/${fileName}"'`;
+            } else if (value) {
+              command += ` \\\n  --form '${key}=${String(value).replace(/'/g, "'\\''")}'`;
+            }
+          }
+        });
+      } else {
+        const cleanParams = Object.fromEntries(
+          Object.entries(paramValues).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+        );
+        command += ` \\\n  -H 'Content-Type: application/json'`;
+        if (Object.keys(cleanParams).length > 0) {
+          command += ` \\\n  --data-raw '${JSON.stringify(cleanParams, null, 2)}'`;
+        }
+      }
+      setCurlCommand(command);
+    };
+
+    generateCurlCommand();
   }, [endpoint, paramValues, baseUrl]);
 
   useEffect(() => {
