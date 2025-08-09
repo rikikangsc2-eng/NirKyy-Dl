@@ -41,6 +41,28 @@
       ]
     },
     {
+      "id": "ai/image-describe",
+      "name": "AI Image Describer (Async)",
+      "category": "AI",
+      "method": "POST",
+      "path": "/ai/image-describe",
+      "description": "Mendeskripsikan konten sebuah gambar berdasarkan prompt yang diberikan. Proses ini berjalan secara asinkron. Gunakan endpoint /job-status untuk mengecek hasilnya.",
+      "params": [
+        {
+          "name": "url",
+          "type": "text",
+          "optional": false,
+          "example": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_qunMNGGtG4huNifqPKYJJxUuO--WKY8rm7TWd5QwVM1MJE9YWvd55yM&s=10"
+        },
+        {
+          "name": "prompt",
+          "type": "text",
+          "optional": false,
+          "example": "jelaskan semua menu yang ada di gambar ini dalam format list"
+        }
+      ]
+    },
+    {
       "id": "ai/upscale",
       "name": "AI Image Upscaler (Async)",
       "category": "AI",
