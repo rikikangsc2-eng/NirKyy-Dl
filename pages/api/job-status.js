@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/api/job-status.js
-* Versi: v1
+* Versi: v2
 */
 
 import { Pool } from 'pg';
@@ -37,11 +37,6 @@ const handler = async (req, res) => {
     }
 
     const job = result.rows[0];
-    const jobAgeMinutes = (new Date() - new Date(job.created_at)) / (1000 * 60);
-
-    if (jobAgeMinutes > 15) {
-      return jsonResponse(res, 410, { success: false, message: 'Job sudah kedaluwarsa (lebih dari 15 menit).', data: { jobId: job.job_id, status: 'expired' } });
-    }
 
     return jsonResponse(res, 200, {
       success: true,

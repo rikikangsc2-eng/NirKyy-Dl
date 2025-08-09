@@ -52,13 +52,13 @@
           "name": "url",
           "type": "text",
           "optional": false,
-          "example": "https://example.com/image.jpg"
+          "example": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_qunMNGGtG4huNifqPKYJJxUuO--WKY8rm7TWd5QwVM1MJE9YWvd55yM&s=10"
         },
         {
           "name": "scale",
           "type": "text",
           "optional": true,
-          "example": "4"
+          "example": "2"
         }
       ]
     }

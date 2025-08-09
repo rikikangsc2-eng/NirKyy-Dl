@@ -1,6 +1,6 @@
 /*
 * Lokasi: pages/api/cron.js
-* Versi: v4
+* Versi: v5
 */
 
 import { Pool } from 'pg';
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
 
     await Promise.all([cleanupWebsiteCounters, cleanupChatHistory, cleanupAsyncJobs]);
 
-    res.status(200).json({ status: 'ok', message: 'Cron job executed successfully. All old data cleaned up.' });
+    res.status(200).json({ status: 'ok', message: 'Cron job executed successfully. Old data has been cleaned up.' });
   } catch (error) {
     console.error('Cron job failed:', error);
     res.status(500).json({ status: 'error', message: 'Internal Server Error' });
