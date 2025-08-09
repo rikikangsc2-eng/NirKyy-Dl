@@ -15,8 +15,8 @@ export const metadata = {
   path: '/ai/upscale',
   description: 'Meningkatkan resolusi gambar hingga 4x menggunakan AI. Proses ini berjalan secara asinkron. Gunakan endpoint /job-status untuk mengecek hasilnya.',
   params: [
-    { name: 'url', type: 'text', optional: false, example: 'https://example.com/image.jpg' },
-    { name: 'scale', type: 'text', optional: true, example: '4' },
+    { name: 'url', type: 'text', optional: false, example: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_qunMNGGtG4huNifqPKYJJxUuO--WKY8rm7TWd5QwVM1MJE9YWvd55yM&s=10' },
+    { name: 'scale', type: 'text', optional: true, example: '2' },
   ]
 };
 
@@ -48,7 +48,7 @@ const handler = async (req, res) => {
 
     const jobId = crypto.randomUUID();
     const callbackKey = crypto.randomBytes(32).toString('hex');
-    const host1BaseUrl = "nirkyy-kun.vercel.app";
+    const host1BaseUrl = "https://nirkyy-kun.vercel.app";
     const callbackUrl = `${host1BaseUrl}/api/_callback/job-update`;
     const host2Url = 'https://nirkyy-api.hf.space/upscale';
 
