@@ -39,6 +39,28 @@
           "example": "false"
         }
       ]
+    },
+    {
+      "id": "ai/upscale",
+      "name": "AI Image Upscaler (Async)",
+      "category": "AI",
+      "method": "POST",
+      "path": "/ai/upscale",
+      "description": "Meningkatkan resolusi gambar hingga 4x menggunakan AI. Proses ini berjalan secara asinkron. Gunakan endpoint /job-status untuk mengecek hasilnya.",
+      "params": [
+        {
+          "name": "url",
+          "type": "text",
+          "optional": false,
+          "example": "https://example.com/image.jpg"
+        },
+        {
+          "name": "scale",
+          "type": "text",
+          "optional": true,
+          "example": "4"
+        }
+      ]
     }
   ],
   "Other": [
@@ -61,6 +83,22 @@
           "type": "text",
           "optional": true,
           "example": "true"
+        }
+      ]
+    },
+    {
+      "id": "job-status",
+      "name": "Job Status Checker",
+      "category": "Other",
+      "method": "GET",
+      "path": "/job-status",
+      "description": "Mengecek status dari sebuah pekerjaan asinkron (seperti AI Upscaler) menggunakan Job ID.",
+      "params": [
+        {
+          "name": "id",
+          "type": "text",
+          "optional": false,
+          "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
         }
       ]
     }
