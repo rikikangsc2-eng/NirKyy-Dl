@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/SearchPage.jsx
-* Versi: v8
+* Versi: v9
 */
 
 import { useState, useMemo } from 'react';
@@ -61,7 +61,7 @@ export default function SearchPage({ docs }) {
             onClick={() => handleSelectEndpoint(doc.id)}
             style={{ animationDelay: `${index * 75}ms` }}
           >
-            <span className="result-category" style={{ color: `var(--${getCategoryClass(doc.category)}-border)`}}>{doc.category}</span>
+            <span className="result-category">{doc.category}</span>
             <span className="result-name">{doc.name}</span>
           </button>
         ))}

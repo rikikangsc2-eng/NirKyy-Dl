@@ -1,6 +1,6 @@
 /*
 * Lokasi: components/HomePage.jsx
-* Versi: v9
+* Versi: v10
 */
 
 import { useMemo } from 'react';
@@ -58,6 +58,11 @@ export default function HomePage() {
 
   return (
     <div className="endpoint-list-container">
+       <header className="home-header">
+        <h1>NirKyy <span>API</span></h1>
+        <p>Dokumentasi API Interaktif & Modern. Jelajahi, uji, dan integrasikan dengan mudah.</p>
+      </header>
+
       {flattenedDocs.map((endpoint) => {
         const isActive = activeEndpointId === endpoint.id;
         const categoryClass = getCategoryClass(endpoint.category);

@@ -1,11 +1,11 @@
 /*
 * Lokasi: components/ResponsePanel.jsx
-* Versi: v11
+* Versi: v12
 */
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { IconResponse, IconCurl, IconX } from './Icons.jsx';
+import { IconResponse, IconCurl } from './Icons.jsx';
 import LogoLoader from './LogoLoader.jsx';
 
 const DynamicCodeBlock = dynamic(
@@ -83,9 +83,6 @@ export default function ResponsePanel({ endpoint, paramValues, apiResponse, isLo
   return (
     <div className={overlayClass} onClick={onClose}>
       <div className={contentClass} onClick={(e) => e.stopPropagation()}>
-        <button className="close-panel-button" onClick={onClose}>
-          <IconX />
-        </button>
         <div className="tabs">
           <button className={`tab-button ${activeTab === 'response' ? 'active' : ''}`} onClick={() => setActiveTab('response')}>
             <IconResponse /> Response
